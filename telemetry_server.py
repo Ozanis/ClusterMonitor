@@ -1,4 +1,4 @@
-import socket, gzip, os, subprocess, ssl
+import socket, gzip, os, subprocess, ssl, psutil
 
 class LocalServ:
 
@@ -7,6 +7,7 @@ class LocalServ:
         self.port = 443
         self.addr = socket.gethostname()
         self.buffer = ""
+        self.filename = ""
 
     def beacon_set(self):
         self.sock.bind((self.addr, self.port))
