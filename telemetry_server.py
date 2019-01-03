@@ -1,4 +1,4 @@
-import socket, gzip, os, subprocess, ssl, psutil
+import socket, gzip, ssl
 
 class LocalServ:
 
