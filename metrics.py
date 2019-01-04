@@ -2,6 +2,7 @@ import psutil, os
 
 """General RAM and SWAP using"""
 
+
 class VirtualMemory:
 
     def __init__(self):
@@ -33,6 +34,7 @@ class VirtualMemory:
 
 """Monitoring sensors"""
 
+
 class Hardware:
 
     def __init__(self):
@@ -51,6 +53,7 @@ class Hardware:
 
 
 """CPU working state"""
+
 
 class Processor:
 
@@ -73,6 +76,7 @@ class Processor:
 
 
 """Monitoring RAM and CPU owerload """
+
 
 class Prcss:
 
@@ -99,8 +103,8 @@ class Prcss:
             return critical_names
 
 
-
 """Monitoring network owerload """
+
 
 class Network:
 
@@ -125,5 +129,3 @@ class Network:
     def __del__(self):
         del self.connections
         del self.net_handler
-
-#class MonitorProcessPriority:

