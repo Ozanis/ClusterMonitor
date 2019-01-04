@@ -84,13 +84,16 @@ class Network:
         self.net_handler = psutil.net_io_counters()
 
     def net_exchange(self):
-
+        netstat = {
+            "recv": self.net_handler.packets_recv,
+            "send": self.net_handler.packets_sent
+                   }
+        return netstat
 
     def __repr__(self):
+        str(self.net_exchange())
 
+    def __del__(self):
+        del self.connections
+        del self.net_handler
 
-class Outp:
-
-    def __init__(self):
-
-    def __repr__(self):__:
