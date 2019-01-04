@@ -1,4 +1,4 @@
-import socket, gzip, ssl, os
+import socket, gzip, ssl, os, syslog
 
 class DF_user:
 
@@ -22,8 +22,9 @@ class Sock443:
     def _conn(self):
         try:
             self.addr = socket.gethostname()
-        except :
+        except socket.gaierror:
             self.__del__()
+
 
     def __del__(self):
         del self.sock

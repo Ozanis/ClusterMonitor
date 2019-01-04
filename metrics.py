@@ -1,4 +1,6 @@
-import psutil, subprocess, os
+import psutil, os
+
+"""General RAM and SWAP using"""
 
 class VirtualMemory:
 
@@ -29,20 +31,26 @@ class VirtualMemory:
         del self.swap_obj
 
 
+"""Monitoring sensors"""
+
 class Hardware:
 
     def __init__(self):
-        self.hrdw = {
-        "power": psutil.sensors_battery(),
-        "fans": psutil.sensors_fans(),
-        "temp": psutil.sensors_temperatures(fahrenheit=False)
-        }
+        self.boot = psutil.boot_time()
 
     def __repr__(self):
-        return str(self.hrdw)
+        hrdw = {
+            "power": psutil.sensors_battery(),
+            "fans": psutil.sensors_fans(),
+            "temp": psutil.sensors_temperatures(fahrenheit=False)
+        }
+        return str(hrdw)
 
     def __del__(self):
-        del self.hrdw
+        del self.boot
+
+
+"""CPU working state"""
 
 class Processor:
 
@@ -51,7 +59,7 @@ class Processor:
         self.cpu_stat = {
             "count_physical": psutil.cpu_count(logical=False),
             "count_logical": psutil.cpu_count(logical=True),
-            "per_core_usage": psutil.cpu_percent(interval=1, percpu=True)
+            "per_core_usage": psutil.cpu_percent(interval=1, percpu=True),
             "cpu_freq": psutil.cpu_freq(percpu=True),
             "cpu_using": psutil.cpu_times_percent(interval=None, percpu=False)
         }
@@ -64,23 +72,40 @@ class Processor:
         del self.cpu_stat
 
 
+"""Monitoring RAM and CPU owerload """
+
 class Prcss:
 
     def __init__(self):
         self.handler = psutil.Process()
+        self.dir = str(os.getcwd())
 
-    def list_pid(self):
-        return psutil.pids()
+    def proc_log(self):
+        proc = psutil.process_iter(attrs=["pid", "name"])
+        with open(self.dir + "/logs/logs.txt", "w") as _f:
+            _f.write(proc.info)
 
-    def critical(self):
+    def critical_prcss(self):
+        c_load=psutil.cpu_percent()
+        m_load=psutil.virtual_memory()
+        if c_load >= 75 or m_load >= 75:
+            n = len(psutil.pids())
+            c_load/=n
+            m_load/=n
+            del n
+            critical_pids = (i for i in psutil.pids() if (self.handler.cpu_percent(i)<c_load and self.handler.cpu_percent(i)<m_load))
+            critical_names = (psutil.Process(i).name() for i in critical_pids )
+            del critical_pids
+            return critical_names
 
-    def critical_load(self):
 
+
+"""Monitoring network owerload """
 
 class Network:
 
     def __init__(self):
-        self.connections = psutil.net_connections()
+        self.connections = psutil.net_if_addrs()
         self.net_handler = psutil.net_io_counters()
 
     def net_exchange(self):
@@ -90,6 +115,10 @@ class Network:
                    }
         return netstat
 
+    def network_pids(self):
+        nets=(psutil.Process(i).connections() for i in psutil.pids() if psutil.Process(i).connections() != [])
+        return nets
+
     def __repr__(self):
         str(self.net_exchange())
 
@@ -97,3 +126,4 @@ class Network:
         del self.connections
         del self.net_handler
 
+#class MonitorProcessPriority:
