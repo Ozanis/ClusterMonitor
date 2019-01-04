@@ -1,4 +1,4 @@
-import socket, gzip, ssl
+import socket, gzip, gzip, hashlib
 
 class LocalServ:
 
@@ -34,3 +34,7 @@ if __name__ == "__main__":
     Server.beacon_recv()
     #receiving files in 1024 bytes packages
     Server.beacon_recv()
+
+
+
+
