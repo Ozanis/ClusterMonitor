@@ -24,6 +24,26 @@ class VirtualMemory:
     def __repr__(self):
         return str(self.swap_stat())+str(self.swap_stat())
 
+    def __del__(self):
+        del self.ram_obj
+        del self.swap_obj
+
+
+class Hardware:
+
+    def __init__(self):
+        self.hrdw = {
+        "power": psutil.sensors_battery(),
+        "fans": psutil.sensors_fans(),
+        "temp": psutil.sensors_temperatures(fahrenheit=False)
+        }
+
+    def __repr__(self):
+        return str(self.hrdw)
+
+    def __del__(self):
+        del self.hrdw
+
 class Processor:
 
     def __init__(self):
@@ -39,20 +59,32 @@ class Processor:
     def __repr__(self):
         return str(self.low_level_info)+str(self.cpu_stat)
 
+    def __del__(self):
+        del self.low_level_info
+        del self.cpu_stat
+
 
 class Prcss:
 
     def __init__(self):
+        self.handler = psutil.Process()
 
-    def list(self):
+    def list_pid(self):
+        return psutil.pids()
 
     def critical(self):
 
     def critical_load(self):
 
+
 class Network:
 
     def __init__(self):
+        self.connections = psutil.net_connections()
+        self.net_handler = psutil.net_io_counters()
+
+    def net_exchange(self):
+
 
     def __repr__(self):
 

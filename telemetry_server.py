@@ -1,4 +1,16 @@
-import socket, gzip, gzip, hashlib
+import socket, gzip, gzip, hashlib, os
+
+class DF_user:
+
+    def __init__(self):
+        self.user = os.getlogin()
+
+    def credentials(self):
+        return str(self.user)
+
+    def __del__(self):
+        del self.user
+
 
 class LocalServ:
 
@@ -28,13 +40,4 @@ class LocalServ:
                     self.sock.send("Error of file transfer".encode())
                     self.sock.close()
                     self.buffer=""
-
-if __name__ == "__main__":
-    Server = LocalServ()
-    Server.beacon_recv()
-    #receiving files in 1024 bytes packages
-    Server.beacon_recv()
-
-
-
 
