@@ -15,7 +15,11 @@ class DF_user:
 class Sock443:
 
     def __init__(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        except socket.error:
+            print("socket creation error")
+            pass
         self.port = 443
         self.addr = ""
 
@@ -25,7 +29,6 @@ class Sock443:
         except socket.gaierror:
             self.__del__()
 
-
     def __del__(self):
         del self.sock
         del self.port
@@ -34,23 +37,35 @@ class Sock443:
 
 class SockSsl(Sock443):
 
-    def __init__(Sock443):
+    def __init__(self):
         super().__init__()
-        Sock443.ssl_sock = ssl.wrap_socket(Sock443.sock, ssl_version=ssl.PROTOCOL_SSLv23, ciphers="", do_handshake_on_connect=True)
-
-    def __del__(Sock443):
-        del Sock443.ssl_sock
-
-    def set(Sock443):
-        Sock443.ssl_sock.connect((Sock443.addr, Sock443.port))
-
-    def _send(Sock443, data):
-
         try:
-            Sock443.ssl_sock.send(data)
-            Sock443.ssl_sock.close()
-        except:
-            Sock443.__del__()
+            self.ssl_sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_SSLv23, ciphers="", server_side=True, do_handshake_on_connect=True)
+        except ssl.CertificateError:
+            print("CertificateError")
+            pass
+
+    def __del__(self):
+        del self.ssl_sock
+
+    def set(self):
+        self.ssl_sock.bind(self.addr)
+        self.sock.listen(1)
+        if self.sock.getpeername()!="correct name":
+            print("wrong connector!")
+            self.ssl_sock.close()
+            return False
+        else:
+            print("start connect")
+            return True
+
+    def _send(self, data):
+        try:
+            self.ssl_sock.send(data)
+        except "sending error":
+            self.ssl_sock.close()
+            self.__del__()
+
 
 
 
