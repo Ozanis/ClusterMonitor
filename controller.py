@@ -22,3 +22,4 @@ class SelfOwerload():
                 self.proc.terminate(subproc)
             if self.proc.memory_percent() >= 1:
                 self.proc.terminate(subproc)
+

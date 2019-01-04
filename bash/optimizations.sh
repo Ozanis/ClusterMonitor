@@ -8,8 +8,8 @@ apt purge compiz compiz-plugins compiz-core compiz-gnome compiz-plugins-default 
 
 apt upgrade
 
+apt install libnotify-bin
 apt install openjdk-8-jdk -y
-
 apt install preload
 
 apt purge laptop-mode-tools
