@@ -1,5 +1,6 @@
 import os, signal, sys, subprocess
 
+"""Console comands"""
 
 class Console:
 

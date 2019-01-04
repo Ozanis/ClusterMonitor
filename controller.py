@@ -1,5 +1,8 @@
 import subprocess, os, sys, psutil
 
+"""diagnosing and autostopping possibly dangerous processes and own wrong threads"""
+
+
 #class MonitorProcessPriority:
 
 

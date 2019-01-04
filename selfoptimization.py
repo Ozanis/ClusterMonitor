@@ -1,5 +1,5 @@
 import time
-
+"""This is the set of selfdebugging tools"""
 """Time of self execution"""
 
 
