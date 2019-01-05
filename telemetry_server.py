@@ -64,7 +64,7 @@ class SockSsl(Sock443):
     def __init__(self):
         super().__init__()
         try:
-            self.ssl_sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_SSLv23, ciphers="", server_side=True, do_handshake_on_connect=True)
+            self.ssl_sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_SSLv23, ciphers="RSA-AES256-SHA512", server_side=True, do_handshake_on_connect=True)
         except ssl.CertificateError:
             print("CertificateError")
             pass

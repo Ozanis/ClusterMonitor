@@ -86,12 +86,12 @@ class Prcss:
 
     def proc_log(self):
         proc = psutil.process_iter(attrs=["pid", "name"])
-        with open(self.dir + "/logs/logs.txt", "w") as _f:
-            _f.write(proc.info)
+        with open("/home/max/Projects/DF_service/logs/proc_log.txt", "w") as _f:
+            _f.write(str(proc))
 
     def critical_prcss(self):
         c_load=psutil.cpu_percent()
-        m_load=psutil.virtual_memory()
+        m_load=psutil.virtual_memory()[2]
         if c_load >= 75 or m_load >= 75:
             n = len(psutil.pids())
             c_load/=n
@@ -100,7 +100,7 @@ class Prcss:
             critical_pids = (i for i in psutil.pids() if (self.handler.cpu_percent(i)<c_load and self.handler.cpu_percent(i)<m_load))
             critical_names = (psutil.Process(i).name() for i in critical_pids )
             del critical_pids
-            return critical_names
+            return
 
 
 """Monitoring network owerload """

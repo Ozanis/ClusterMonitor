@@ -1,4 +1,4 @@
-import psutil, os, debug_test_tools, metrics
+import debug_test_tools, metrics
 
 def sensors_stat():
     hrdw = metrics.Hardware()
@@ -15,7 +15,7 @@ def cpu_stat():
 
 def proc_stat():
     proc = metrics.Prcss()
-    print(proc.__repr__())
+    print(proc.proc_log())
 
 def net_stat():
     net = metrics.Network()
