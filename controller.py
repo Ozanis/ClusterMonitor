@@ -3,9 +3,6 @@ import subprocess, os, sys, psutil
 """diagnosing and autostopping possibly dangerous processes and own wrong threads"""
 
 
-#class MonitorProcessPriority:
-
-
 class SelfOwerload():
 
     def __init__(self):
@@ -26,3 +23,6 @@ class SelfOwerload():
             if self.proc.memory_percent() >= 1:
                 self.proc.terminate(subproc)
 
+
+
+#class MonitorProcessPriority:

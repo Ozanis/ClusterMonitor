@@ -1,4 +1,4 @@
-import psutil, os
+import psutil, os, datetime
 
 """General RAM and SWAP using"""
 
@@ -38,7 +38,7 @@ class VirtualMemory:
 class Hardware:
 
     def __init__(self):
-        self.boot = psutil.boot_time()
+        self.boot = datetime.datetime.fromtimestamp(psutil.boot_time())
 
     def __repr__(self):
         hrdw = {
@@ -62,7 +62,7 @@ class Processor:
         self.cpu_stat = {
             "count_physical": psutil.cpu_count(logical=False),
             "count_logical": psutil.cpu_count(logical=True),
-            "per_core_usage": psutil.cpu_percent(interval=1, percpu=True),
+            "per_core_usage": psutil.cpu_percent(interval=0.125, percpu=True),
             "cpu_freq": psutil.cpu_freq(percpu=True),
             "cpu_using": psutil.cpu_times_percent(interval=None, percpu=False)
         }
@@ -124,7 +124,7 @@ class Network:
         return nets
 
     def __repr__(self):
-        str(self.net_exchange())
+        return str(self.net_exchange()) + str(self.network_pids())
 
     def __del__(self):
         del self.connections
