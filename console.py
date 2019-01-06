@@ -1,66 +1,16 @@
-import os, signal, sys, subprocess
+import sys, argparse
 
-"""Console comands"""
 
 class Console:
-
     def __init__(self):
-        self.com_list = {
-            "--stop",
-            "--start",
-            "--dsbl autostop",
-            "--restore",
-            "--clear logs",
-            "--support",
-            "--DF"}
+        self.parser = argparse.ArgumentParser(description="Using console commands to manage DF-service", add_help=True, prog="DF-service")
+        self.parser.add_argument(const="MAN", dest="--man", nargs="?", help="To view program`s summary")
+        self.parser.add_argument(const="LOG", dest="--log", nargs="?", help=" To view logs")
+        self.parser.add_argument(const="SUPPORT", dest="--support", nargs="?", help="To write your exception into logs")
+        self.parser.add_argument(const="CLEAR", dest="--clear", nargs="?", help="Clear logs")
+        self.parser.add_argument(const="DSBL", dest="--dsbl", nargs="?", help="Disable process extra-autotermination")
+        self.parser.add_argument(const="RESTORE", dest="--restore", nargs="?", help="To reject df-patches (optimisations) and restore linux (please use it only in case of your OS`s problem working)")
+        self.parser.add_argument(const="DF", dest="--DF!", nargs="?", help="Transform your linux to DF-linux (usually executing on installing service)")
 
-    def stop(self):
-        return
-
-    def start(self):
-        return
-
-    def dsbl(self):
-        return
-
-    def restore(self):
-        return
-
-    def clear(self):
-        return
-
-    def support(self):
-        return
-
-    def DF(self):
-        return
-
-
-    def classcomand(self, f):
-        def choise(*args, **kwargs):
-            c = f(*args, **kwargs)
-            if "--stop" in inp:
-                self.stop()
-            elif "--start" in inp:
-                self.start()
-            elif "--dsbl autostop" in inp:
-                self.dsbl()
-            elif "--restore" in inp:
-                self.restore()
-            elif "--stop" in inp:
-                self.clear()
-            elif "--stop" in inp:
-                self.support()
-            elif "--stop" in inp:
-                self.DF()
-            else:
-                print("wrong")
-            return c
-        return choise
-
-    @classcomand
-    def inp_cmd(self, inp):
-        cmnd = (i for i in self.com_list if i in self.com_list)
-
-
-#class Daemon:
+    def parse(self):
+        return self.parser.parse_args(sys.argv[1:])
