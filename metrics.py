@@ -7,14 +7,12 @@ class SwapMemory:
     def __init__(self):
         self.swap_obj = psutil.swap_memory()
 
-    def swap_used(self):
-        return self.swap_obj[1] << 30
-
-    def swap_all(self):
-        return self.swap_obj[0] << 30
-
-    def percent(self):
-        return self.swap_obj[3]
+    def __repr__(self):
+        return str({
+            "all_swap": self.swap_obj[0] << 30,
+            "used": self.swap_obj[1] << 30,
+            "%": self.swap_obj[3]
+        })
 
     def __del__(self):
         del self.swap_obj
@@ -28,17 +26,12 @@ class VirtualMemory:
     def __init__(self):
         self.ram_obj = psutil.virtual_memory()
 
-    def ram_tot(self):
-        return self.ram_obj[0] << 30
-
-    def ram_used(self):
-        return self.ram_obj[3] << 30
-
-    def ram_us_p(self):
-        return self.ram_obj[2]
-
     def __repr__(self):
-        return "/".join([self.ram_tot(), self.ram_used(), self.ram_us_p()])
+        return {
+            "ram_tot": self.ram_obj[0] << 30,
+            "ram_used": self.ram_obj[3] << 30,
+            "%": self.ram_obj[2]
+        }
 
     def __del__(self):
         del self.ram_obj
@@ -88,6 +81,7 @@ class Booting:
     def __del__(self):
         del self.time
 
+
 """CPU working state"""
 
 
@@ -126,11 +120,12 @@ class Prcss:
         m_load=psutil.virtual_memory()[2]
         if c_load >= 75 or m_load >= 75:
             n = len(psutil.pids())
-            c_load/=n
-            m_load/=n
+            c_load /= n
+            m_load /= n
             del n
             critical_pids = [i for i in psutil.pids() if (self.handler.cpu_percent(i)<c_load and self.handler.cpu_percent(i)<m_load)]
             critical_names = (psutil.Process(i).name() for i in critical_pids )
+
             del critical_pids
 
 
@@ -143,17 +138,13 @@ class Network:
         self.net_handler = psutil.net_io_counters()
 
     def net_exchange(self):
-        netstat = {
+        return {
             "recv": self.net_handler.packets_recv,
             "send": self.net_handler.packets_sent
                    }
-        return netstat
-
-    def network_pids(self):
-        return psutil.net_connections()
 
     def __repr__(self):
-        return "\n".join([self.net_exchange(), self.network_pids()])
+        return "\n".join([self.net_exchange(), psutil.net_connections()])
 
     def __del__(self):
         del self.net_handler
