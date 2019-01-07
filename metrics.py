@@ -43,22 +43,18 @@ class VirtualMemory:
 class Hardware:
 
     def __init__(self):
-        self.boot = datetime.datetime.fromtimestamp(psutil.boot_time())
 
-    def power(self):
-        return psutil.sensors_battery()
-
-    def fans(self):
-        return psutil.sensors_fans()
-
-    def temp(self):
-        return psutil.sensors_temperatures(fahrenheit=False)
+        self.power = psutil.sensors_battery()
+        self.fans = psutil.sensors_fans()
+        self.temp = psutil.sensors_temperatures(fahrenheit=False)
 
     def __repr__(self):
         return
 
     def __del__(self):
-        del self.boot
+        del self.power
+        del self.fans
+        del self.temp
 
 
 """Boot loading stat"""
@@ -69,14 +65,14 @@ class Booting:
     def __init__(self):
         self.time = datetime.datetime.fromtimestamp(psutil.boot_time())
 
-    def time_stat(self):
-        return subprocess.check_output(["systemd-analyze"])
-
-    def loading(self):
-        return subprocess.check_output(["systemd-analyze", "blame"], universal_newlines=True)
+    @staticmethod
+    def system_log():
+        subprocess.check_output(["systemd-analyze", "blame"], universal_newlines=True)
+        subprocess.check_output(["systemd-analyze"])
+        subprocess.check_output(["uname", "-a"], universal_newlines=True)
 
     def __repr__(self):
-        return str(self.time_stat())+"\n"+self.loading()
+        return str(self.time) + "\n" + str(self.system_log())
 
     def __del__(self):
         del self.time
@@ -144,7 +140,10 @@ class Network:
                    }
 
     def __repr__(self):
-        return "\n".join([self.net_exchange(), psutil.net_connections()])
+        return str("\n".join([self.net_exchange(), psutil.net_connections()]))
 
     def __del__(self):
         del self.net_handler
+
+
+"""Get info about system upgrades"""

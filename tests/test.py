@@ -1,4 +1,4 @@
-import psutil
+from systemd import journal
 
-procs = [p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])
-print(procs)
+journal.send()
+

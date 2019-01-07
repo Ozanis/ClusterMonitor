@@ -1,7 +1,6 @@
 from time import time as time
 from psutil import cpu_percent as cpu
 from psutil import virtual_memory as ram
-
 """Time of self execution"""
 
 
@@ -20,7 +19,7 @@ def timer(f):
 def check_cpu(f):
     def test(*args, **kwargs):
         exc = f(*args, **kwargs)
-        print("Using CPU", cpu())
+        print("Using CPU", cpu)
         return exc
     return test
 
@@ -34,3 +33,5 @@ def check_ram(f):
         print("Using RAM", ram())
         return exc
     return test
+
+"""Self Service`s logs"""

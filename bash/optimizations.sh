@@ -8,15 +8,19 @@ apt purge compiz compiz-plugins compiz-core compiz-gnome compiz-plugins-default 
 
 apt upgrade
 
+apt install
+apt install build-essential
 apt install libnotify-bin
 apt install openjdk-8-jdk -y
 apt install preload
 
 apt purge laptop-mode-tools
-add-apt-repository ppa:linrunner/tlp
+add-apt-repository -y ppa:linrunner/tlp
+add-apt-repository -y ppa:teejee2008/ppa
 apt update
 apt install tlp tlp-rdw
 tlp start
+apt install ukuu
 
 echo "
 vm.swapiness =10
