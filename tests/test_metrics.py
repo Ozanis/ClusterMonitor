@@ -1,4 +1,4 @@
-import debug_test_tools, metrics
+import debug_test_tools, metrics, psutil
 
 
 def sensors_stat():
@@ -17,7 +17,7 @@ def cpu_stat():
 
 def proc_stat():
     proc = metrics.Prcss()
-    print(proc.proc_log())
+    print(proc)
 
 
 def net_stat():
@@ -40,3 +40,4 @@ def test():
     net_stat()
 
 test()
+

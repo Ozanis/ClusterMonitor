@@ -1,5 +1,4 @@
-import psutil, os, datetime, subprocess, logging, debug_test_tools
-from dataclasses import dataclass, field
+import psutil, os, datetime, subprocess, logging
 
 """Getting SWAP using"""
 
@@ -9,11 +8,11 @@ class SwapMemory:
         self.swap_obj = psutil.swap_memory()
 
     def __repr__(self):
-        return {
+        return str({
             "all_swap": self.swap_obj[0] << 30,
             "used": self.swap_obj[1] << 30,
             "%": self.swap_obj[3]
-        }
+        })
 
     def __del__(self):
         del self.swap_obj
@@ -28,11 +27,7 @@ class VirtualMemory:
         self.ram_obj = psutil.virtual_memory()
 
     def __repr__(self):
-        return {
-            "ram_tot": self.ram_obj[0] << 30,
-            "ram_used": self.ram_obj[3] << 30,
-            "%": self.ram_obj[2]
-        }
+        return str({"ram_tot": self.ram_obj[0] << 30, "ram_used":self.ram_obj[3] << 30, "%": self.ram_obj[2]})
 
     def __del__(self):
         del self.ram_obj
@@ -41,12 +36,12 @@ class VirtualMemory:
 """Monitoring sensors"""
 
 
-@dataclass
 class Hardware:
 
-    power: str = field(default=psutil.sensors_battery(), repr=True)
-    fans: str = field(default=psutil.sensors_fans(), repr=True)
-    temp: str = field(default=psutil.sensors_temperatures(fahrenheit=False), repr=True)
+    def __init__(self):
+        self.power = psutil.sensors_battery()
+        self.fans = psutil.sensors_fans()
+        self.temp = psutil.sensors_temperatures(fahrenheit=False)
 
     def __repr__(self):
         return "\n".join([self.power, self.fans, self.temp])
@@ -105,9 +100,6 @@ class Prcss:
     def __init__(self):
         self.handler = psutil.Process()
 
-    def proc_log(self):
-        proc = {p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])}
-
     def critical_prcss(self):
         c_load=psutil.cpu_percent()
         m_load=psutil.virtual_memory()[2]
@@ -117,9 +109,13 @@ class Prcss:
             m_load /= n
             del n
             critical_pids = [i for i in psutil.pids() if (self.handler.cpu_percent(i)<c_load and self.handler.cpu_percent(i)<m_load)]
-            critical_names = (psutil.Process(i).name() for i in critical_pids )
-
+            critical_names = [psutil.Process(i).name() for i in critical_pids]
             del critical_pids
+            critical_processes = "Critical processes:"+ str(critical_names)
+            subprocess.Popen(['notify-send', critical_processes])
+
+    def __repr__(self):
+        return str({p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])})
 
 
 """Monitoring network owerload """
@@ -130,14 +126,12 @@ class Network:
     def __init__(self):
         self.net_handler = psutil.net_io_counters()
 
-    def net_exchange(self):
-        return {
+    def __repr__(self):
+        net_stat = {
             "recv": self.net_handler.packets_recv,
             "send": self.net_handler.packets_sent
-                   }
-
-    def __repr__(self):
-        return str("\n".join([self.net_exchange(), psutil.net_connections()]))
+        }
+        return str("\n".join([net_stat, psutil.net_connections()]))
 
     def __del__(self):
         del self.net_handler
@@ -150,18 +144,17 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
 
     def __init__(self):
         super().__init__()
-        self.dir = str(os.getcwd())
-        logging.basicConfig(filename=self.dir + "/logs/telemetry_log.log", level=logging.INFO)
-        self.logs = logging.getLogger("telemetry")
+        logging.basicConfig(filename=str(os.getcwd()) + "/logs/telemetry_log.log", level=logging.INFO)
 
-    def to_do_logs(self):
+    @staticmethod
+    def to_do_logs():
         try:
             logging.info("---Boot log---")
             logging.info(Booting())
             logging.info("---Hardware log---")
-            logging.info(Hardware)
+            logging.info(Hardware())
             logging.info("---CPU log---")
-            logging.info(Processor)
+            logging.info(Processor())
             logging.info("---RAM log---")
             logging.info(VirtualMemory())
             logging.info("---SWAP using log---")
@@ -171,7 +164,4 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
             logging.info("---Network log---")
         except RuntimeError:
             logging.warning("UNABLE TO WRITE LOG")
-
-    def __del__(self):
-        del self.logs
-
+            subprocess.Popen(['notify-send', "Error: Unable to write telemetry data"])
