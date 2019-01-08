@@ -1,4 +1,5 @@
-import psutil, os, datetime, subprocess
+import psutil, os, datetime, subprocess, logging, debug_test_tools
+from dataclasses import dataclass, field
 
 """Getting SWAP using"""
 
@@ -8,11 +9,11 @@ class SwapMemory:
         self.swap_obj = psutil.swap_memory()
 
     def __repr__(self):
-        return str({
+        return {
             "all_swap": self.swap_obj[0] << 30,
             "used": self.swap_obj[1] << 30,
             "%": self.swap_obj[3]
-        })
+        }
 
     def __del__(self):
         del self.swap_obj
@@ -40,16 +41,15 @@ class VirtualMemory:
 """Monitoring sensors"""
 
 
+@dataclass
 class Hardware:
 
-    def __init__(self):
-
-        self.power = psutil.sensors_battery()
-        self.fans = psutil.sensors_fans()
-        self.temp = psutil.sensors_temperatures(fahrenheit=False)
+    power: str = field(default=psutil.sensors_battery(), repr=True)
+    fans: str = field(default=psutil.sensors_fans(), repr=True)
+    temp: str = field(default=psutil.sensors_temperatures(fahrenheit=False), repr=True)
 
     def __repr__(self):
-        return
+        return "\n".join([self.power, self.fans, self.temp])
 
     def __del__(self):
         del self.power
@@ -104,12 +104,9 @@ class Prcss:
 
     def __init__(self):
         self.handler = psutil.Process()
-        self.dir = str(os.getcwd())
 
     def proc_log(self):
         proc = {p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])}
-        with open("/home/max/Projects/DF_service/logs/proc_log.txt", "w") as _f:
-            _f.write(str(proc))
 
     def critical_prcss(self):
         c_load=psutil.cpu_percent()
@@ -146,4 +143,35 @@ class Network:
         del self.net_handler
 
 
-"""Get info about system upgrades"""
+"""Realise telemetry collection and logging"""
+
+
+class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, Network):
+
+    def __init__(self):
+        super().__init__()
+        self.dir = str(os.getcwd())
+        logging.basicConfig(filename=self.dir + "/logs/telemetry_log.log", level=logging.INFO)
+        self.logs = logging.getLogger("telemetry")
+
+    def to_do_logs(self):
+        try:
+            logging.info("---Boot log---")
+            logging.info(Booting())
+            logging.info("---Hardware log---")
+            logging.info(Hardware)
+            logging.info("---CPU log---")
+            logging.info(Processor)
+            logging.info("---RAM log---")
+            logging.info(VirtualMemory())
+            logging.info("---SWAP using log---")
+            logging.info(SwapMemory())
+            logging.info("---Process log---")
+            logging.info(Prcss())
+            logging.info("---Network log---")
+        except RuntimeError:
+            logging.warning("UNABLE TO WRITE LOG")
+
+    def __del__(self):
+        del self.logs
+
