@@ -46,6 +46,7 @@ class SockSsl(Sock4547):
             logging.error("Certificate error")
             subprocess.Popen(['notify-send', "Connection refused, because .X509 certificate not valid"])
             del self.ssl_sock
+            exit(1)
 
     def __del__(self):
         self.ssl_sock.close()

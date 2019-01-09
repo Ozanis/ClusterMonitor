@@ -67,6 +67,7 @@ def server():
 
 
 def console(*args, **kwargs):
+    com = sys.argv[1:]
     parser = argparse.ArgumentParser(description="Using console commands to manage DF-service", add_help=True,
                                      prog="DF-service")
     parser.add_argument(const="MAN", dest="--man", nargs="?", help="To view program`s summary")
@@ -89,7 +90,7 @@ if __name__ == "__main__":
             os.remove(path)
     _Tmonitor = threading.Thread(target=critical_monitor(), args="")
     _Tmonitor.start()
-    _Tconsole = threading.Thread(target=console(), args=sys.argv[1:])
+    _Tconsole = threading.Thread(target=console(), args="")
     _Tconsole.start()
 
     sys.exit(0)

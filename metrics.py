@@ -27,7 +27,7 @@ class VirtualMemory:
         self.ram_obj = psutil.virtual_memory()
 
     def __repr__(self):
-        return str({"ram_tot": self.ram_obj[0] >> 30, "ram_used":self.ram_obj[3] >> 30, "%": self.ram_obj[2]})
+        return str({"ram_tot": self.ram_obj[0] >> 30, "ram_used": self.ram_obj[3] >> 30, "%": self.ram_obj[2]})
 
     def __del__(self):
         del self.ram_obj
