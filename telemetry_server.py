@@ -71,7 +71,7 @@ class SockSsl(Sock4547):
             subprocess.Popen(['notify-send', "Warning: Firewall role is not added!", "Be carefull sock blocked"])
             exit(1)
 
-    def _set(self):
+    def set(self):
         self.ssl_sock.bind(self.addr)
         self.sock.listen(1)
         _con = self.sock.accept()
@@ -88,7 +88,7 @@ class SockSsl(Sock4547):
             logging.log("Connection estabilised with %s:" % str(_con))
             return True
 
-    def _send(self, data):
+    def send(self, data):
         _buf = gzip.compress(str(data), compresslevel=9).encode("utf-8")
         try:
             self.ssl_sock.send(_buf)
@@ -99,6 +99,4 @@ class SockSsl(Sock4547):
         self.__del__()
         logging.info("---Telemetry log SUCCESSFULLY CLOSE session---")
 
-#def connect(self, data):
- #   self._set()
-  #  self._send(data)
+

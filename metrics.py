@@ -165,3 +165,9 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
         except RuntimeError:
             logging.warning("UNABLE TO WRITE LOG")
             subprocess.Popen(['notify-send', "Error: Unable to write telemetry data"])
+
+    def __add__(self, *args):
+
+
+    def __repr__(self):
+        return Booting()+Hardware()+Processor()+SwapMemory()+Prcss
