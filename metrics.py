@@ -9,8 +9,8 @@ class SwapMemory:
 
     def __repr__(self):
         return str({
-            "all_swap": self.swap_obj[0] << 30,
-            "used": self.swap_obj[1] << 30,
+            "all_swap": self.swap_obj[0] >> 30,
+            "used": self.swap_obj[1] >> 30,
             "%": self.swap_obj[3]
         })
 
@@ -27,7 +27,7 @@ class VirtualMemory:
         self.ram_obj = psutil.virtual_memory()
 
     def __repr__(self):
-        return str({"ram_tot": self.ram_obj[0] << 30, "ram_used":self.ram_obj[3] << 30, "%": self.ram_obj[2]})
+        return str({"ram_tot": self.ram_obj[0] >> 30, "ram_used":self.ram_obj[3] >> 30, "%": self.ram_obj[2]})
 
     def __del__(self):
         del self.ram_obj
@@ -39,12 +39,12 @@ class VirtualMemory:
 class Hardware:
 
     def __init__(self):
-        self.power = psutil.sensors_battery()
-        self.fans = psutil.sensors_fans()
-        self.temp = psutil.sensors_temperatures(fahrenheit=False)
+        self.power = str(psutil.sensors_battery())
+        self.fans = str(psutil.sensors_fans())
+        self.temp = str(psutil.sensors_temperatures(fahrenheit=False))
 
     def __repr__(self):
-        return "\n".join([self.power, self.fans, self.temp])
+        return self.power + "\n" + self.fans + "\n" + self.temp
 
     def __del__(self):
         del self.power
@@ -131,7 +131,7 @@ class Network:
             "recv": self.net_handler.packets_recv,
             "send": self.net_handler.packets_sent
         }
-        return str("\n".join([net_stat, psutil.net_connections()]))
+        return str(net_stat) + "\n" + str(psutil.net_connections())
 
     def __del__(self):
         del self.net_handler
