@@ -109,10 +109,9 @@ class Prcss:
             m_load /= n
             del n
             critical_pids = [i for i in psutil.pids() if (self.handler.cpu_percent(i)<c_load and self.handler.cpu_percent(i)<m_load)]
-            critical_names = [psutil.Process(i).name() for i in critical_pids]
-            del critical_pids
-            critical_processes = "Critical processes:"+ str(critical_names)
-            subprocess.Popen(['notify-send', critical_processes])
+            return critical_pids
+        else:
+            return None
 
     def __repr__(self):
         return str({p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])})
@@ -144,7 +143,7 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
 
     def __init__(self):
         super().__init__()
-        logging.basicConfig(filename=str(os.getcwd()) + "/logs/telemetry_log.log", level=logging.INFO)
+        logging.basicConfig(filename=str(os.getcwd()) + "/logs/temp.log", level=logging.INFO)
 
     @staticmethod
     def to_do_logs():
@@ -165,8 +164,6 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
         except RuntimeError:
             logging.warning("UNABLE TO WRITE LOG")
             subprocess.Popen(['notify-send', "Error: Unable to write telemetry data"])
-
-    #def __add__(self, *args):
 
     def __repr__(self):
         return str(Booting())+str(Hardware())+str(Processor())+str(SwapMemory())+str(Prcss)

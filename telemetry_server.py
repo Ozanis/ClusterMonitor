@@ -6,14 +6,7 @@ import socket, gzip, ssl, os, logging, subprocess
 class Sock4547:
 
     def __init__(self):
-        try:
-            subprocess.check_call(["ping", "-c 1", "www.google.ru"])
-        except subprocess.CalledProcessError:
-            logging.warning("No internet. Extra stopping")
-            subprocess.Popen(['notify-send', "Warning: check your internet connection or possibly google host ureachable :)"])
-            exit(1)
-
-        logging.basicConfig(filename= str(os.getcwd()) + "/logs/server_log.log", level=logging.INFO)
+        logging.basicConfig(filename= str(os.getcwd()) + "/logs/temp.log", level=logging.INFO)
         logging.info("---Telemetry log open session---")
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,7 +24,6 @@ class Sock4547:
             self.addr = socket.gethostname()
         except socket.gaierror:
             logging.error("Server unreached")
-            self.__del__()
             exit(1)
 
     def __del__(self):
@@ -54,7 +46,6 @@ class SockSsl(Sock4547):
             logging.error("Certificate error")
             subprocess.Popen(['notify-send', "Connection refused, because .X509 certificate not valid"])
             del self.ssl_sock
-            pass
 
     def __del__(self):
         self.ssl_sock.close()
@@ -89,14 +80,13 @@ class SockSsl(Sock4547):
             return True
 
     def send(self, data):
-        _buf = gzip.compress(str(data), compresslevel=9).encode("utf-8")
+        _buf = gzip.compress(str(data), compresslevel=9)
         try:
             self.ssl_sock.send(_buf)
         except socket.error:
             logging.error("Sending error")
             subprocess.Popen(['notify-send', "Warning: sending metrics error"])
         self.ssl_sock.close()
-        self.__del__()
         logging.info("---Telemetry log SUCCESSFULLY CLOSE session---")
 
 
