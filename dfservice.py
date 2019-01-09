@@ -1,26 +1,7 @@
-import sys, telemetry_server, controller, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil
+import sys, telemetry_server, controller, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse
 
 """Main script"""
 
-"""
-class Service:
-    def __init__(self):
-        self.telemetry = metrics.Telemetry()
-        self.log_time = time.time()
-
-    def log(self):
-        #logging.basicConfig(filename=str(os.getcwd()) + "/logs/self_log.log")
-        try:
-            self.telemetry.to_do_logs()
-        except RuntimeError:
-            logging.info("---FINISHED WITH ERRORS---")
-            subprocess.Popen(['notify-send', "Runtime service`s error"])
-        logging.info("Execution time: %s" % (str((time.time() - self.log_time))))
-
-    def __del__(self):
-        del self.telemetry
-        del self.log_time
-"""
 
 def add_log():
     try:
@@ -38,7 +19,8 @@ def add_log():
         return False
     return True
 
-def log():
+
+def temp_log():
     telemetry = metrics.Telemetry()
     log_time = time.time()
     try:
@@ -84,13 +66,30 @@ def server():
         return False
 
 
+def console(*args, **kwargs):
+    parser = argparse.ArgumentParser(description="Using console commands to manage DF-service", add_help=True,
+                                     prog="DF-service")
+    parser.add_argument(const="MAN", dest="--man", nargs="?", help="To view program`s summary")
+    parser.add_argument(const="LOG", dest="--log", nargs="?", help=" To view logs")
+    parser.add_argument(const="SUPPORT", dest="--support", nargs="?", help="To write your exception into logs")
+    parser.add_argument(const="CLEAR", dest="--clear", nargs="?", help="Clear logs")
+    parser.add_argument(const="DSBL", dest="--dsbl", nargs="?", help="Disable process extra-autotermination")
+    parser.add_argument(const="RESTORE", dest="--restore", nargs="?",
+                        help="To reject df-patches (optimisations) and restore linux (please use it only in case of your OS`s problem working)")
+    parser.add_argument(const="DF", dest="--DF!", nargs="?",
+                        help="Transform your linux to DF-linux (usually executing on installing service)")
+    parser.parse_args(sys.argv[1:])
+
+
 if __name__ == "__main__":
     path = str(os.getcwd()) + "/logs/temp.log"
-    log()
+    temp_log()
     if server():
         if add_log():
             os.remove(path)
     _Tmonitor = threading.Thread(target=critical_monitor(), args="")
     _Tmonitor.start()
+    _Tconsole = threading.Thread(target=console(), args=sys.argv[1:])
+    _Tconsole.start()
 
     sys.exit(0)
