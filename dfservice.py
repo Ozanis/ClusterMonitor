@@ -1,4 +1,4 @@
-import sys, telemetry_server, controller, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse, console
+import sys, telemetry_server, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse, console
 
 """Main script"""
 
