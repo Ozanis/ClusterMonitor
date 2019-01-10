@@ -8,7 +8,6 @@ apt purge compiz compiz-plugins compiz-core compiz-gnome compiz-plugins-default 
 
 apt upgrade
 
-apt install
 apt install build-essential
 apt install libnotify-bin
 apt install openjdk-8-jdk -y
@@ -36,6 +35,7 @@ then echo >> "\nkernel.sched_autogroup_enabled=1"
 else break
 fi 
 
+systemctl disable systemd-journal-flush.service
 systemctl disable openvpn.service
 systemctl disable pppd-dns.service
 systemctl disable ModemManager.service
@@ -45,6 +45,8 @@ systemctl disable NetworkManager-wait-online.service
 
 apt autoremove
 apt autoclean
+
+journalctl --vacuum-time=5d
 
 systemd-analyze
 
