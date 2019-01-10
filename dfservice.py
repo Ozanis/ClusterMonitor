@@ -1,4 +1,4 @@
-import sys, telemetry_server, controller, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse
+import sys, telemetry_server, controller, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse, console
 
 """Main script"""
 
@@ -66,31 +66,15 @@ def server():
         return False
 
 
-def console(*args, **kwargs):
-    com = sys.argv[1:]
-    parser = argparse.ArgumentParser(description="Using console commands to manage DF-service", add_help=True,
-                                     prog="DF-service")
-    parser.add_argument(const="MAN", dest="--man", nargs="?", help="To view program`s summary")
-    parser.add_argument(const="LOG", dest="--log", nargs="?", help=" To view logs")
-    parser.add_argument(const="SUPPORT", dest="--support", nargs="?", help="To write your exception into logs")
-    parser.add_argument(const="CLEAR", dest="--clear", nargs="?", help="Clear logs")
-    parser.add_argument(const="DSBL", dest="--dsbl", nargs="?", help="Disable process extra-autotermination")
-    parser.add_argument(const="RESTORE", dest="--restore", nargs="?",
-                        help="To reject df-patches (optimisations) and restore linux (please use it only in case of your OS`s problem working)")
-    parser.add_argument(const="DF", dest="--DF!", nargs="?",
-                        help="Transform your linux to DF-linux (usually executing on installing service)")
-    parser.parse_args(sys.argv[1:])
-
-
 if __name__ == "__main__":
     path = str(os.getcwd()) + "/logs/temp.log"
     temp_log()
     if server():
         if add_log():
             os.remove(path)
-    _Tmonitor = threading.Thread(target=critical_monitor(), args="")
-    _Tmonitor.start()
-    _Tconsole = threading.Thread(target=console(), args="")
-    _Tconsole.start()
+    #_Tmonitor = threading.Thread(target=critical_monitor(), args="")
+    #_Tmonitor.start()
+    #_Tconsole = threading.Thread(target=console.console(), args="")
+    #_Tconsole.start()
 
     sys.exit(0)

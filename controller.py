@@ -7,7 +7,7 @@ class SelfOwerload():
 
     def __init__(self):
         self.proc = psutil.Process()
-        self.pid = self.proc = psutil.Process().pid
+        self.pid = self.proc.pid
 
     def self_monitor(self):
         while True:
@@ -24,5 +24,3 @@ class SelfOwerload():
                 self.proc.terminate(subproc)
 
 
-
-#class MonitorProcessPriority:
