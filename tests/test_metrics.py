@@ -1,4 +1,4 @@
-import debug_test_tools, metrics, psutil
+import metrics
 
 
 def sensors_stat():

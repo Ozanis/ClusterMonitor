@@ -1,4 +1,6 @@
-import subprocess, metrics, debug_test_tools
+import subprocess, metrics
+from tools import debug_test_tools
+
 
 @debug_test_tools.timer
 @debug_test_tools.check_ram

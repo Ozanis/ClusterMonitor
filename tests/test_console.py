@@ -1,4 +1,5 @@
-import sys, argparse, debug_test_tools
+import sys, argparse
+from tools import debug_test_tools
 
 
 class Console:
