@@ -1,5 +1,25 @@
 import socket, gzip, ssl, os, logging, subprocess
 
+
+path="/home/max/PycharmProjects/DFos_optimizations/credentials/client/"
+host, port="127.0.0.1", 4547
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+
+context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+context.verify_mode = ssl.CERT_REQUIRED
+context.check_hostname = True
+#context.load_cert_chain(path+"crt.pem")
+context.load_verify_locations(path+"crt.pem")
+context.options = ssl.PROTOCOL_TLSv1_2
+sock.connect((host, port))
+ssock = context.wrap_socket(sock)
+
+print(ssock.version())
+ssock.close()
+sock.close()
+
+
+
 class Client:
     def __init__(self):
         try:
@@ -56,21 +76,3 @@ class SockSsl(Client):
     def __del__(self):
         self.ssl_sock.close()
         del self.ssl_sock
-
-
-path="/home/max/PycharmProjects/DFos_optimizations/credentials/client/"
-host, port="127.0.0.1", 4547
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-
-context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-context.verify_mode = ssl.CERT_REQUIRED
-context.check_hostname = True
-#context.load_cert_chain(path+"crt.pem")
-context.load_verify_locations(path+"crt.pem")
-context.options = ssl.PROTOCOL_TLSv1_2
-sock.connect((host, port))
-ssock = context.wrap_socket(sock)
-
-print(ssock.version())
-ssock.close()
-sock.close()
