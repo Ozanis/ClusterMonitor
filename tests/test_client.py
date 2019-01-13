@@ -58,16 +58,19 @@ class SockSsl(Client):
         del self.ssl_sock
 
 
-path="/home/max/PycharmProjects/DFos_optimizations/credentials/"
-context= ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-context.load_cert_chain(path+"crt.pem", path+"key.pem")
-context.options=ssl.PROTOCOL_TLSv1
-hostname="127.0.0.1"
+path="/home/max/PycharmProjects/DFos_optimizations/credentials/client/"
+host, port="127.0.0.1", 4547
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
-    with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-        #context.options
-        ssock.connect(("127.0.0.1", 4547))
-        #ssock.
-        ssock.do_handshake()
-        print(ssock.version())
+context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+context.verify_mode = ssl.CERT_REQUIRED
+context.check_hostname = True
+#context.load_cert_chain(path+"crt.pem")
+context.load_verify_locations(path+"crt.pem")
+context.options = ssl.PROTOCOL_TLSv1_2
+sock.connect((host, port))
+ssock = context.wrap_socket(sock)
+
+print(ssock.version())
+ssock.close()
+sock.close()

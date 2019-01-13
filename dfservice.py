@@ -1,4 +1,4 @@
-import sys, telemetry_server, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse, console
+import sys, telemetry_server, metrics, threading, logging, debug_test_tools, os, time, subprocess, psutil, argparse, console, check_internet
 
 """Main script"""
 
@@ -49,12 +49,8 @@ def critical_monitor():
 
 
 def server():
-    try:
-        subprocess.check_call(["ping", "-c 1", "www.google.ru"])
-    except subprocess.CalledProcessError:
-        logging.warning("No internet. Extra stopping")
-        subprocess.Popen(['notify-send', "Warning: check your internet connection or possibly google host ureachable :)"])
-        return False
+    while not check_internet.internet():
+        time.sleep(5)
     con = telemetry_server.SockSsl()
     con.set()
     try:

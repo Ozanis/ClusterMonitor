@@ -1,9 +1,12 @@
-import psutil
+import socket
 
-p = psutil.pids()
-for i in p:
-    r = psutil.Process(i).name()
-    if "bash" in r:
+sock = socket.socket(socket.AF_INET, socket.AF_SECURITY, 0)
+
+sock.bind(("111.111.111.111", 9090))
+
+while True:
+    sock.listen(1)
 
 
-print()
+
+print(socket.gethostbyaddr("111.111.111.111"))
