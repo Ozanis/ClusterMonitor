@@ -4,7 +4,7 @@ bash outlook.sh
 
 apt purge hexchat
 apt purge thunderbird
-apt purge compiz compiz-plugins compiz-core compiz-gnome compiz-plugins-default compizconfig-settings-manager
+apt purge compiz-core
 
 apt upgrade
 
@@ -15,11 +15,9 @@ apt install preload
 
 apt purge laptop-mode-tools
 add-apt-repository -y ppa:linrunner/tlp
-add-apt-repository -y ppa:teejee2008/ppa
 apt update
 apt install tlp tlp-rdw
 tlp start
-apt install ukuu
 
 echo "
 vm.swapiness =10

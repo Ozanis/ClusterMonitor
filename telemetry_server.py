@@ -1,13 +1,4 @@
-import socket, gzip, ssl, os, logging, subprocess, hashlib
-
-
-def firewall_ban(con):
-    try:
-        subprocess.check_call(["ufw", "deny", "incoming", "from", str(con)])
-    except subprocess.CalledProcessError:
-        logging.warning("Firewall role is not added!")
-        exit(1)
-    logging.warning("Firewall role succefully added: %s (incoming traffic has blocked)" % str(con))
+import socket, gzip, ssl, os, logging, subprocess
 
 
 class SockSsl:
@@ -50,6 +41,17 @@ class SockSsl:
             logging.error("Error of binding")
         self.peer = "localhost"
         self.peername = "localhost"  # test version
+
+    def con(self):
+        self.ssl_sock.listen(1)
+        c, p = self.ssl_sock.accept()
+        if c != self.host:
+            try:
+                subprocess.check_call(["ufw", "deny", "incoming", "from", str(c)])
+                logging.warning("Firewall role succefully added: %s (incoming traffic has blocked)" % str(c))
+            except subprocess.CalledProcessError:
+                logging.warning("Firewall role is not added!")
+                exit(1)
 
     def send(self, data):
         _buf = gzip.compress(str(data), compresslevel=9)
