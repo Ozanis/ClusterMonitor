@@ -52,9 +52,8 @@ def server():
     while not check_internet.internet():
         time.sleep(5)
     con = telemetry_server.SockSsl()
-    con.set()
     try:
-        with open(path, "rb") as _buf:
+        with open(path + "/log/temp.log", "rb") as _buf:
             con.send(_buf)
             return True
     except IOError:
@@ -63,7 +62,7 @@ def server():
 
 
 if __name__ == "__main__":
-    path = str(os.getcwd()) + "/logs/temp.log"
+    path = str(os.getcwd())
     temp_log()
     if server():
         if add_log():

@@ -2,7 +2,7 @@ import logging, os
 from time import time as time
 import psutil
 """
-Self Service`s logs and self debug tools:
+Self Service`s log and self debug tools:
 Time of self execution
 CPU of self execution
 RAM of self execution
@@ -38,7 +38,7 @@ def logg(f):
     def test(*args, **kwargs):
         p = psutil.Process.pid
         t = time()
-        logging.basicConfig(filename=str(os.getcwd()) + "/logs/self_log.log")
+        logging.basicConfig(filename=str(os.getcwd()) + "/log/self_log.log")
         logging.info("---Get executional data---")
         exc = f(*args, **kwargs)
         logging.info("Used CPU: %s" % psutil.cpu_percent(p))
