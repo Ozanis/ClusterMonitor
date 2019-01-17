@@ -1,4 +1,4 @@
-import psutil, os, datetime, subprocess, logging
+import psutil, os, datetime, subprocess, logging, getpass
 
 """Getting SWAP using"""
 
@@ -148,6 +148,8 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
     @staticmethod
     def to_do_logs():
         try:
+            logging.info("---USER---")
+            logging.info(str(getpass.getuser()))
             logging.info("---Boot log---")
             logging.info(Booting())
             logging.info("---Hardware log---")
@@ -161,6 +163,7 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
             logging.info("---Process log---")
             logging.info(Prcss())
             logging.info("---Network log---")
+            logging.info(Network())
         except RuntimeError:
             logging.warning("UNABLE TO WRITE LOG")
             subprocess.Popen(['notify-send', "Error: Unable to write telemetry data"])

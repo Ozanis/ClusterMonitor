@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-bash outlook.sh
+cd - && cd console && bash outlook.sh
 
 apt purge hexchat
 apt purge thunderbird

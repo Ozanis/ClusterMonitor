@@ -1,0 +1,20 @@
+Usage: DF-service [h]
+
+Using console commands to manage DF-service
+
+optional arguments:
+  help  show this help message and exit
+
+            [man] [log] [support] [clear] [dsbl] [restore]
+                  [DF!]
+
+optional arguments:
+  man       To view program`s summary
+  log       To view log
+  support   To write your exception into log
+  clear     Clear log
+  dsbl      Disable process extra-autotermination
+  restore   To reject df-patches (optimisations) and restore linux (please
+              use it only in case of your OS`s problem working)
+  DF!       Transform your linux to DF-linux (usually executing on
+              installing service)

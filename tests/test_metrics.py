@@ -1,4 +1,4 @@
-import metrics
+import metrics, getpass
 
 
 def sensors_stat():
@@ -32,12 +32,5 @@ def boot_stat():
 #@debug_test_tools.timer
 #@debug_test_tools.check_ram
 #@debug_test_tools.check_cpu
-def test():
-    sensors_stat()
-    ram_stat()
-    cpu_stat()
-    proc_stat()
-    net_stat()
 
-test()
-
+metrics.Telemetry().to_do_logs()

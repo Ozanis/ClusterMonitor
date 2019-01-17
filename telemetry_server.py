@@ -4,7 +4,6 @@ import socket, gzip, ssl, os, logging, subprocess
 class SockSsl:
 
     def __init__(self):
-        logging.info(str(os.getlogin()))
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         except socket.error:
@@ -16,8 +15,9 @@ class SockSsl:
         except ssl.SSLEOFError:
             subprocess.Popen(['notify-send', "SSL context loading failed"])
             logging.error("Fake context")
+            exit(1)
         try:
-            path = "/home/max/PycharmProjects/DFos_optimizations/credentials/Server/"
+            path = str(os.getcwd()) + "/credentials/Server/"
             self.context.check_hostname = True
             self.context.verify_mode = ssl.CERT_REQUIRED
             self.context.load_cert_chain(certfile=path + "crt.pem", keyfile=path + "key.pem")
@@ -27,11 +27,13 @@ class SockSsl:
         except ssl.SSLEOFError:
             subprocess.Popen(['notify-send', "Braking cert-chain"])
             logging.error("Corrupted cert-chain")
+            exit(1)
         try:
             self.ssl_sock = self.context.wrap_socket(self.sock, server_side=True, do_handshake_on_connect=True)
         except ssl.SSLEOFError:
             subprocess.Popen(['notify-send', "Error of ssl-socket wrapping"])
             logging.error("Error loading cert-chain")
+            exit(1)
         try:
             self.port = 4547
             self.host = "127.0.0.1"
@@ -39,6 +41,7 @@ class SockSsl:
         except OSError:
             subprocess.Popen(['notify-send', "Error of binding"])
             logging.error("Error of binding")
+            exit(1)
         self.peer = "localhost"
         self.peername = "localhost"  # test version
 
