@@ -51,12 +51,13 @@ def logg(f):
 def internet():
     try:
         subprocess.check_call(["ping", "-c 1", "www.google.ru"])
-        return True
     except subprocess.CalledProcessError:
         logging.warning("No internet. Extra stopping")
         subprocess.Popen(['notify-send', "Warning: check your internet connection or possibly google host ureachable :)"])
         sleep(5)
         return False
+    try:
+        subprocess.check_call(["ping", "-c 1", ""])
 
 
 def critical_monitor():
@@ -96,5 +97,3 @@ def boot_disp():
                 break
     subprocess.Popen(['notify-send', "Boot time%s" % t])
 
-
-boot_disp()

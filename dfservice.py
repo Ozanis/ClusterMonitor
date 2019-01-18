@@ -1,11 +1,9 @@
 import sys, telemetry_server, metrics, logging, os, time, subprocess, Tools, threading
-from console import console
 
 """Main script"""
 
 
 def add_log(path):
-    path += "/log/"
     _buf = ""
     try:
         f = open(path + "temp.log")
