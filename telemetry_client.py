@@ -1,4 +1,4 @@
-import socket, gzip, ssl, os, logging, subprocess
+import socket, gzip, ssl, os, logging, subprocess, gc
 
 
 class SockSsl:
@@ -18,7 +18,7 @@ class SockSsl:
             subprocess.Popen(['notify-send', "SSL context loading failed"])
             logging.error("Fake context")
             exit(1)
-        path = str(os.getcwd()) + "/credentials/client/"
+        path = str(os.getcwd()) + "/Credentials/"
         try:
             self.context.verify_mode = ssl.CERT_REQUIRED
             #self.context.load_cert_chain(certfile=path + "crt.pem", keyfile=path + "key.pem")
@@ -54,27 +54,24 @@ class SockSsl:
         except socket.error:
             subprocess.Popen(['notify-send', "Warning: sending metrics error"])
             exit(1)
-
+"""
     def __del__(self):
-        if self.ssl_sock is not None:
+        if self.ssl_sock in locals():
             del self.context
-            self.ssl_sock.unwrap()
-            self.ssl_sock.close()
-            del self.ssl_sock
-            self.sock.close()
-            del self.sock
+            try:
+                self.ssl_sock.unwrap()
+                self.ssl_sock.close()
+                self.sock.close()
+            finally:
+                del self.ssl_sock, self.sock
         else:
-            if self.sock is not None:
-                del self.sock
-                if self.context is not None:
+            if self.sock in locals():
+                try:
+                    self.sock.close()
+                finally:
+                    del self.sock
+                if self.context in locals():
                     del self.context
-                    if self.ssl_sock is not None:
+                    if self.ssl_sock in locals():
                         del self.ssl_sock
-
-c = SockSsl()
-with open("file.txt", "wb") as _f:
-    _f.write(b"dffffffffffff")
-with open("file.txt", "rb") as _f:
-    _buf = _f.read()
-    c.con(_buf)
-os.remove("file.txt")
+"""
