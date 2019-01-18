@@ -117,7 +117,7 @@ class Prcss:
         return str({p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])})
 
 
-"""Monitoring network owerload """
+"""Monitoring network overload"""
 
 
 class Network:

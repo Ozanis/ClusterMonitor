@@ -1,21 +1,13 @@
 import sys, os, subprocess, telemetry_server
-#import argparse
-#parser = argparse.ArgumentParser(description="Using console commands to manage DF-service", add_help=True, prog="DF-service")
-#parser.add_argument(const="MAN", dest="--man", nargs="?", help="To view program`s summary")
-#parser.add_argument(const="LOG", dest="--log", nargs="?", help=" To view log")
-#parser.add_argument(const="SUPPORT", dest="--support", nargs="?", help="To write your exception into log")
-#parser.add_argument(const="CLEAR", dest="--clear", nargs="?", help="Clear log")
-#parser.add_argument(const="DSBL", dest="--dsbl", nargs="?", help="Disable process extra-autotermination")
-#parser.add_argument(const="RESTORE", dest="--restore", nargs="?", help="To reject df-patches (optimisations) and restore linux (please use it only in case of your OS`s problem working)")
-#parser.add_argument(const="DF", dest="--DF!", nargs="?", help="Transform your linux to DF-linux (usually executing on installing service)")
-#parser.parse_args(sys.argv[1:])
 
-def help():
+
+def hlp():
     try:
         with open(path+"help.txt") as _f:
             print(_f.read())
     except IOError:
         exit(1)
+
 
 def man():
     try:
@@ -23,6 +15,7 @@ def man():
             print(_f.read())
     except IOError:
         exit(1)
+
 
 def log():
     drct="/usr/bin/DF/log/telemetry.log"
@@ -32,14 +25,20 @@ def log():
     except IOError:
         exit(1)
 
+
 def support():
     sup = telemetry_server.SockSsl()
     print("Your exceptions:\n")
     msg = str(input())
     try:
-        sup.send(msg.encode())
+        if len(msg) > 1:
+            sup.send(msg.encode())
+            subprocess.Popen(['notify-send', "Message have been sent"])
+        else:
+            subprocess.Popen(['notify-send', "Error: Very short message"])
     finally:
         exit(0)
+
 
 def clear():
     drct = "/usr/bin/DF/log/telemetry.log"
@@ -49,9 +48,10 @@ def clear():
     except IOError:
         exit(1)
 
-def dsbl():
+#def dsbl():
 
-def restore():
+#def restore():
+
 
 def DF():
     subprocess.call(path+"outlook.sh", shell=True)
@@ -67,6 +67,7 @@ def parse():
     else:
         return None
 
+
 def com(i):
     if i ==0:
         man()
@@ -76,10 +77,10 @@ def com(i):
         support()
     elif i == 3:
         clear()
-    elif i == 4:
-        dsbl()
-    elif i ==5:
-        restore()
+ #   elif i == 4:
+  #      dsbl()
+   # elif i ==5:
+    #    restore()
     elif i == 6:
         DF()
     elif i==7:
@@ -90,7 +91,7 @@ if __name__ == "main":
     path = str(os.getcwd())
     arg = parse()
     if arg is None:
-        help()
+        hlp()
     else:
         com(arg)
     exit(0)

@@ -1,4 +1,4 @@
-import sys, telemetry_server, metrics, logging, os, time, subprocess, checks, threading
+import sys, telemetry_server, metrics, logging, os, time, subprocess, Tools, threading
 from console import console
 
 """Main script"""
@@ -40,7 +40,7 @@ def temp_log():
 
 
 def server(path):
-    while not checks.internet():
+    while not Tools.internet():
         time.sleep(5)
     con = telemetry_server.SockSsl()
     try:
@@ -54,14 +54,16 @@ def server(path):
 
 if __name__ == "__main__":
     time.sleep(5)
+    Tools.boot_disp()
     path = str(os.getcwd()) + "/log/"
     temp_log()
     if add_log(path):
         server(path)
     else:
         pass
+    time.sleep(1)
 
-    Tmonitor = threading.Thread(target=checks.critical_monitor(), args="")
+    Tmonitor = threading.Thread(target=Tools.critical_monitor(), args="")
     Tmonitor.start()
 
     sys.exit(0)
