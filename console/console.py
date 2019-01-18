@@ -1,5 +1,6 @@
 import sys, os, subprocess, telemetry_client
 
+#sys.path.append("~/PycharmProjects/DFos_optimizations")
 
 def hlp():
     try:
