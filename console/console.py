@@ -1,4 +1,4 @@
-import sys, os, subprocess, telemetry_server
+import sys, os, subprocess, telemetry_client
 
 
 def hlp():
@@ -27,7 +27,7 @@ def log():
 
 
 def support():
-    sup = telemetry_server.SockSsl()
+    sup = telemetry_client.SockSsl()
     print("Your exceptions:\n")
     msg = str(input())
     try:

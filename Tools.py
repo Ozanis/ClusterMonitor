@@ -56,9 +56,9 @@ def internet():
         subprocess.Popen(['notify-send', "Warning: check your internet connection or possibly google host ureachable :)"])
         sleep(5)
         return False
-    try:
-        subprocess.check_call(["ping", "-c 1", ""])
-
+#    try:
+ #       subprocess.check_call(["ping", "-c 1", ""])
+    return True
 
 def critical_monitor():
     monitor = metrics.Prcss()

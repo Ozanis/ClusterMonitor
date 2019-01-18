@@ -1,4 +1,4 @@
-import sys, telemetry_server, metrics, logging, os, time, subprocess, Tools, threading
+import sys, telemetry_client, metrics, logging, os, time, subprocess, Tools, threading
 
 """Main script"""
 
@@ -40,10 +40,10 @@ def temp_log():
 def server(path):
     while not Tools.internet():
         time.sleep(5)
-    con = telemetry_server.SockSsl()
+    chnl = telemetry_client.SockSsl()
     try:
         with open(path + "temp.log", "rb") as _buf:
-            con.send(_buf)
+            chnl.con(_buf)
             return True
     except IOError:
         subprocess.Popen(['notify-send', "Error: corrupted temp log file"])
