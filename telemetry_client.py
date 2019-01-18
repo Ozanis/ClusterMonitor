@@ -46,7 +46,7 @@ class SockSsl:
             self.ssl_sock.connect((host, port))
         except socket.error:
             subprocess.Popen(['notify-send', "Error of connection"])
-            logging.error("Error of binding")
+            logging.error("Error of connection")
             exit(1)
         buf = gzip.compress(val, compresslevel=9)
         try:

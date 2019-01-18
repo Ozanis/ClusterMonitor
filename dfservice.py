@@ -56,11 +56,10 @@ if __name__ == "__main__":
     path = str(os.getcwd()) + "/log/"
     temp_log()
     if add_log(path):
-        server(path)
+        while not server(path):
+            time.sleep(6)
     else:
         pass
-    time.sleep(1)
-
     Tmonitor = threading.Thread(target=Tools.critical_monitor(), args="")
     Tmonitor.start()
 
