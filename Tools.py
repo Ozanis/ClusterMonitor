@@ -82,20 +82,19 @@ def critical_monitor():
 def boot_disp():
     boot = None
     try:
-        boot = subprocess.Popen(["systemd-analyze"], shell=False)
+        boot = str(subprocess.getoutput("systemd-analyze"))
     except subprocess.SubprocessError:
         subprocess.Popen(['notify-send', "Unable to read boot time"])
-    t=""
-    for i in str(boot):
+    t = ""
+    for i in boot:
         if i == "=":
-            i += 2
-            t=i
+            t = ":"
+            continue
         if t != "":
             t += i
-    subprocess.Popen(['notify-send', "Boot time:", t])
+            if "s" in t:
+                break
+    subprocess.Popen(['notify-send', "Boot time%s" % t])
 
 
 boot_disp()
-#def temp():
- #   t = metrics.Hardware().temp
-  #  for i in t:
