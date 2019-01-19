@@ -34,13 +34,21 @@ class SockSsl:
             subprocess.Popen(['notify-send', "Error of ssl-socket wrapping"])
             logging.error("Error loading cert-chain")
             exit(1)
-        self.host = None
+        try:
+            host = "127.0.0.1"
+            port = 4547
+            self.ssl_sock.bind((host, port))
+            #self.ssl_sock.ssl_version
+        except ssl.SSLEOFError:
+            subprocess.Popen(['notify-send', "Error of binding"])
+            logging.error("Error of binding")
+            exit(1)
 
     def con(self):
         self.ssl_sock.listen(1)
-        c, p = self.ssl_sock.accept()
+        a, c = self.ssl_sock.accept()
         print(c)
-        print(p)
+        print(a)
         #if c != self.host:
             #try:
             #   subprocess.check_call(["ufw", "deny", "incoming", "from", str(c)])
@@ -48,17 +56,21 @@ class SockSsl:
             #except subprocess.CalledProcessError:
             #   logging.warning("Firewall role is not added!")
             #  exit(1)
-        data = None
-        _buf = self.ssl_sock.recv(3072)
+        _buf = None
         try:
-
-            data = gzip.decompress(_buf)
-            del _buf
+            _buf = a.recv(3072)
         except socket.error:
             subprocess.Popen(['notify-send', "Warning: Recieving metrics error"])
             exit(1)
+        data = None
         try:
-            with open(str(os.getcwd()) + "log/test.log", "wb") as _f:
+            data = gzip.decompress(_buf)
+            del _buf
+        except EOFError:
+            subprocess.Popen(['notify-send', "Error: Unable to decompress packets"])
+            exit(1)
+        try:
+            with open(str(os.getcwd()) + "/log/test.log", "wb") as _f:
                 _f.write(data)
                 del data
         except IOError:

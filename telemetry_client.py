@@ -57,7 +57,6 @@ class SockSsl:
             exit(1)
         try:
             self.ssl_sock.send(buf)
-            print(buf)
         except socket.error:
             subprocess.Popen(['notify-send', "Warning: sending metrics error"])
             exit(1)
