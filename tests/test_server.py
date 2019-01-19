@@ -1,54 +1,57 @@
-import socket, gzip, ssl, logging, subprocess, os
+import logging
+from socket import AF_INET, SOCK_STREAM, socket, error
+from gzip import decompress
+from ssl import SSLEOFError, PROTOCOL_TLSv1_2, OP_NO_TLSv1, OP_NO_TLSv1_1, SSLContext
+from os import getcwd
+from sys import exit
 
 
 class SockSsl:
 
     def __init__(self):
         try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-        except socket.error:
-            subprocess.Popen(['notify-send', "Сould not create socket"])
+            self.sock = socket(AF_INET, SOCK_STREAM, 0)
+        except error:
+            print("Сould not create socket")
             logging.error("Socket creation error")
             exit(1)
         self.context = None
         try:
-            self.context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-        except ssl.SSLEOFError:
-            subprocess.Popen(['notify-send', "SSL context loading failed"])
+            self.context = SSLContext(PROTOCOL_TLSv1_2)
+        except SSLEOFError:
+            print("SSL context loading failed")
             logging.error("Fake context")
             exit(1)
-        path = str(os.getcwd()) + "/credentials/Server/"
+        path = str(getcwd()) + "/credentials/Server/"
         try:
             self.context.load_cert_chain(certfile=path +"crt.pem", keyfile=path + "key.pem")
-            self.context.options |= ssl.PROTOCOL_TLSv1_2 | ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
+            self.context.options |= PROTOCOL_TLSv1_2 | OP_NO_TLSv1 | OP_NO_TLSv1_1
             self.context.set_ciphers("TLS13+CDH+AESGCM:ECDH+CHACHA20")
-        except ssl.SSLEOFError:
-            subprocess.Popen(['notify-send', "Braking cert-chain"])
+        except SSLEOFError:
+            print("Braking cert-chain")
             logging.error("Corrupted cert-chain")
             exit(1)
         self.ssl_sock = None
         try:
             self.ssl_sock = self.context.wrap_socket(self.sock, server_side=True, do_handshake_on_connect=True)
             #self.ssl_sock.ssl_version
-        except ssl.SSLEOFError:
-            subprocess.Popen(['notify-send', "Error of ssl-socket wrapping"])
+        except SSLEOFError:
+            print( "Error of ssl-socket wrapping")
             logging.error("Error loading cert-chain")
             exit(1)
         try:
-            host = "127.0.0.1"
+            host = ""
             port = 4547
             self.ssl_sock.bind((host, port))
             #self.ssl_sock.ssl_version
-        except ssl.SSLEOFError:
-            subprocess.Popen(['notify-send', "Error of binding"])
+        except SSLEOFError:
+            print( "Error of binding")
             logging.error("Error of binding")
             exit(1)
 
     def con(self):
         self.ssl_sock.listen(1)
         a, c = self.ssl_sock.accept()
-        print(c)
-        print(a)
         #if c != self.host:
             #try:
             #   subprocess.check_call(["ufw", "deny", "incoming", "from", str(c)])
@@ -58,25 +61,21 @@ class SockSsl:
             #  exit(1)
         _buf = None
         try:
-            _buf = a.recv(3072)
-        except socket.error:
-            subprocess.Popen(['notify-send', "Warning: Recieving metrics error"])
+            _buf = a.recv(92160)
+        except error:
+            print( "Warning: Recieving metrics error")
             exit(1)
         data = None
         try:
-            data = gzip.decompress(_buf)
+            data = decompress(_buf)
             del _buf
         except EOFError:
-            subprocess.Popen(['notify-send', "Error: Unable to decompress packets"])
+            print( "Error: Unable to decompress packets")
             exit(1)
         try:
-            with open(str(os.getcwd()) + "/log/test.log", "wb") as _f:
+            with open(str(getcwd()) + "/log/test.log", "wb") as _f:
                 _f.write(data)
                 del data
         except IOError:
-            subprocess.Popen(['notify-send', "Warning: Unable to write log"])
+            print("Warning: Unable to write log")
             exit(1)
-
-
-c = SockSsl()
-c.con()

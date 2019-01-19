@@ -1,12 +1,9 @@
-import logging, os, subprocess, metrics, psutil, re
+import logging
+from os import getcwd
+from subprocess import check_call, CalledProcessError, Popen, SubprocessError, getoutput
+from metrics import Prcss
+from psutil import cpu_percent, virtual_memory, Process
 from time import sleep, time
-
-"""
-Self Service`s log and self debug tools:
-Time of self execution
-CPU of self execution
-RAM of self execution
-"""
 
 
 def timer(f):
@@ -21,7 +18,7 @@ def timer(f):
 def check_cpu(f):
     def test(*args, **kwargs):
         exc = f(*args, **kwargs)
-        print("Used CPU: %s" % psutil.cpu_percent())
+        print("Used CPU: %s" % cpu_percent())
         return exc
     return test
 
@@ -29,40 +26,46 @@ def check_cpu(f):
 def check_ram(f):
     def test(*args, **kwargs):
         exc = f(*args, **kwargs)
-        print("Used RAM: %s" % psutil.virtual_memory())
+        print("Used RAM: %s" % virtual_memory())
         return exc
     return test
 
 
 def logg(f):
     def test(*args, **kwargs):
-        p = psutil.Process.pid
+        p = Process.pid
         t = time()
-        logging.basicConfig(filename=str(os.getcwd()) + "/log/self_log.log")
+        logging.basicConfig(filename=str(getcwd()) + "/log/self_log.log")
         logging.info("---Get executional data---")
         exc = f(*args, **kwargs)
-        logging.info("Used CPU: %s" % psutil.cpu_percent(p))
+        logging.info("Used CPU: %s" % cpu_percent(p))
         logging.info("Execution time: " + str((time() - t)))
         logging.info("---Get executional data---")
         return exc
     return test
 
 
-def internet():
+def internet(host):
     try:
-        subprocess.check_call(["ping", "-c 1", "www.google.ru"])
-    except subprocess.CalledProcessError:
+        check_call(["ping", "-c 1", "www.google.ru"])
+    except CalledProcessError:
         logging.warning("No internet. Extra stopping")
-        subprocess.Popen(['notify-send', "Warning: check your internet connection or possibly google host ureachable :)"])
+        Popen(['notify-send', "Warning: check your internet connection or possibly google host ureachable :)"])
         sleep(5)
         return False
-#    try:
- #       subprocess.check_call(["ping", "-c 1", ""])
+    try:
+        check_call(["ping", "-c 1", host])
+    except CalledProcessError:
+        logging.warning("No connection with the server")
+        Popen(
+            ['notify-send', "Warning: Connection with the server is missing"])
+        return False
     return True
 
+
 def critical_monitor():
-    monitor = metrics.Prcss()
-    logging.basicConfig(filename=str(os.getcwd()) + "/log/critical.log", level=logging.INFO)
+    monitor = Prcss()
+    logging.basicConfig(filename=str(getcwd()) + "/log/critical.log", level=logging.INFO)
     _val = ""
     while True:
         critical_pids = monitor.critical_prcss()
@@ -71,10 +74,10 @@ def critical_monitor():
         elif critical_pids == _val:
             break
         else:
-            critical_names = [psutil.Process(i).name() for i in critical_pids]
+            critical_names = [Process(i).name() for i in critical_pids]
             critical_processes = "Critical processes: " + str(critical_names)
             del critical_names
-            subprocess.Popen(['notify-send', "Warning:", critical_processes])
+            Popen(['notify-send', "Warning:", critical_processes])
             logging.info(critical_processes)
             _val = str(critical_pids)
         sleep(6)
@@ -83,9 +86,9 @@ def critical_monitor():
 def boot_disp():
     boot = None
     try:
-        boot = str(subprocess.getoutput("systemd-analyze"))
-    except subprocess.SubprocessError:
-        subprocess.Popen(['notify-send', "Unable to read boot time"])
+        boot = str(getoutput("systemd-analyze"))
+    except SubprocessError:
+        Popen(['notify-send', "Unable to read boot time"])
     t = ""
     for i in boot:
         if i == "=":
@@ -95,5 +98,5 @@ def boot_disp():
             t += i
             if "s" in t:
                 break
-    subprocess.Popen(['notify-send', "Boot time%s" % t])
+    Popen(['notify-send', "Boot time%s" % t])
 
