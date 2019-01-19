@@ -3,8 +3,9 @@ import sys, telemetry_client, metrics, logging, os, time, subprocess, Tools, thr
 """Main script"""
 
 
-def add_log(path):
+def add_log():
     _buf = ""
+    path = str(os.getcwd()) + "/log/"
     try:
         f = open(path + "temp.log")
         _buf = f.read()
@@ -22,8 +23,7 @@ def add_log(path):
         subprocess.Popen(['notify-send', "Error: Unable to add new log"])
         return False
     else:
-        os.remove(path)
-    return True
+        return True
 
 
 def temp_log():
@@ -37,27 +37,33 @@ def temp_log():
     logging.info("Execution time: %s" % (str((time.time() - log_time))))
 
 
-def server(path):
+def server():
     while not Tools.internet():
         time.sleep(5)
     chnl = telemetry_client.SockSsl()
+    path = str(os.getcwd()) + "/log/temp.log"
     try:
-        with open(path + "temp.log", "rb") as _buf:
+        with open(path, "rb") as _f:
+            _buf = _f.read()
             chnl.con(_buf)
-            return True
     except IOError:
         subprocess.Popen(['notify-send', "Error: corrupted temp log file"])
         return False
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        return False
+    else:
+        return True
 
 
 if __name__ == "__main__":
     time.sleep(5)
     Tools.boot_disp()
-    path = str(os.getcwd()) + "/log/"
     temp_log()
-    if add_log(path):
-        while not server(path):
-            time.sleep(6)
+    if add_log():
+        server()
+        time.sleep(6)
     else:
         pass
     Tmonitor = threading.Thread(target=Tools.critical_monitor(), args="")

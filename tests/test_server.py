@@ -17,7 +17,7 @@ class SockSsl:
             subprocess.Popen(['notify-send', "SSL context loading failed"])
             logging.error("Fake context")
             exit(1)
-        path = str(os.getcwd()) + "/credentials/Server"
+        path = str(os.getcwd()) + "/credentials/Server/"
         try:
             self.context.load_cert_chain(certfile=path +"crt.pem", keyfile=path + "key.pem")
             self.context.options |= ssl.PROTOCOL_TLSv1_2 | ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
@@ -35,55 +35,36 @@ class SockSsl:
             logging.error("Error loading cert-chain")
             exit(1)
         self.host = None
-        try:
-            port = 4547
-            self.host = "127.0.0.1"
-            self.ssl_sock.bind((self.host, port))
-        except OSError:
-            subprocess.Popen(['notify-send', "Error of binding"])
-            logging.error("Error of binding")
-            exit(1)
 
     def con(self):
         self.ssl_sock.listen(1)
         c, p = self.ssl_sock.accept()
+        print(c)
+        print(p)
         #if c != self.host:
             #try:
-             #   subprocess.check_call(["ufw", "deny", "incoming", "from", str(c)])
-              #  logging.warning("Firewall role succefully added: %s (incoming traffic has blocked)" % str(c))
+            #   subprocess.check_call(["ufw", "deny", "incoming", "from", str(c)])
+            #  logging.warning("Firewall role succefully added: %s (incoming traffic has blocked)" % str(c))
             #except subprocess.CalledProcessError:
-             #   logging.warning("Firewall role is not added!")
-              #  exit(1)
+            #   logging.warning("Firewall role is not added!")
+            #  exit(1)
+        data = None
+        _buf = self.ssl_sock.recv(3072)
         try:
-            _buf = self.ssl_sock.recv(3072)
+
             data = gzip.decompress(_buf)
             del _buf
-            with open("log/test.log", "wb") as _f:
-                _f.write(data)
         except socket.error:
-            subprocess.Popen(['notify-send', "Warning: sending metrics error"])
+            subprocess.Popen(['notify-send', "Warning: Recieving metrics error"])
+            exit(1)
+        try:
+            with open(str(os.getcwd()) + "log/test.log", "wb") as _f:
+                _f.write(data)
+                del data
+        except IOError:
+            subprocess.Popen(['notify-send', "Warning: Unable to write log"])
             exit(1)
 
-    def __del__(self):
-        if self.host is not None:
-            self.ssl_sock.close()
-            self.sock.close()
-            del self.ssl_sock, self.sock, self.host, self.context
-        else:
-            if self.sock is not None:
-                try:
-                    self.sock.close()
-                finally:
-                    del self.sock
-                if self.context is not None:
-                    del self.context
-                    if self.ssl_sock is not None:
-                        try:
-                            self.ssl_sock.close()
-                        finally:
-                            del self.ssl_sock
-                            if self.host is not None:
-                                del self.host
 
 c = SockSsl()
 c.con()

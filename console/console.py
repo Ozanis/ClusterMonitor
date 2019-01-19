@@ -33,7 +33,7 @@ def support():
     msg = str(input())
     try:
         if len(msg) > 1:
-            sup.send(msg.encode())
+            sup.con(msg.encode())
             subprocess.Popen(['notify-send', "Message have been sent"])
         else:
             subprocess.Popen(['notify-send', "Error: Very short message"])

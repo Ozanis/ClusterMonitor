@@ -116,6 +116,9 @@ class Prcss:
     def __repr__(self):
         return str({p.pid: p.info for p in psutil.process_iter(attrs=['name', 'username'])})
 
+    def __del__(self):
+        del self.handler
+
 
 """Monitoring network overload"""
 
