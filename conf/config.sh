@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 
-mv DF.service /usr/bin/DF
+mkdir /usr/bin/DF/DF.srvice
 
-sudo systemctl start df.service         #To start running service
+mv DF.service /usr/bin/DF/DF.srvice
+
+systemctl daemon-reload
+
+systemctl start df.service         #To start running service

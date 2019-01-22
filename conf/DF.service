@@ -4,9 +4,11 @@ After=multi-user.target
 Conflicts=getty@tty1.service
 
 [Service]
-Type=DFservice
+Type=simple
 ExecStart=/usr/bin/python3 /usr/bin/dfservice.py
 StandardInput=tty-force
+StandardOutput=
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
