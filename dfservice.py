@@ -3,10 +3,11 @@ from sys import exit
 from gzip import compress
 from psutil import Process
 from metrics import Telemetry, Prcss
-from time import time, sleep
-from os import getcwd, remove
 from subprocess import Popen
 from Tools import internet, boot_disp
+from time import time, sleep
+from os import getcwd, remove
+
 
 """Main script"""
 
