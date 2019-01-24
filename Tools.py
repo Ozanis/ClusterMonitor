@@ -1,8 +1,6 @@
 import logging
-from os import getcwd
 from subprocess import check_call, CalledProcessError, Popen, SubprocessError, getoutput
-from metrics import Prcss
-from psutil import cpu_percent, virtual_memory, Process
+from psutil import cpu_percent, virtual_memory
 from time import sleep, time
 
 
@@ -31,20 +29,6 @@ def check_ram(f):
     return test
 
 
-def logg(f):
-    def test(*args, **kwargs):
-        p = Process.pid
-        t = time()
-        logging.basicConfig(filename=str(getcwd()) + "/log/self_log.log")
-        logging.info("---Get executional data---")
-        exc = f(*args, **kwargs)
-        logging.info("Used CPU: %s" % cpu_percent(p))
-        logging.info("Execution time: " + str((time() - t)))
-        logging.info("---Get executional data---")
-        return exc
-    return test
-
-
 def internet(host):
     try:
         check_call(["ping", "-c 1", "www.google.ru"])
@@ -61,26 +45,6 @@ def internet(host):
             ['notify-send', "Warning: Connection with the server is missing"])
         return False
     return True
-
-
-def critical_monitor():
-    monitor = Prcss()
-    logging.basicConfig(filename=str(getcwd()) + "/log/critical.log", level=logging.INFO)
-    _val = ""
-    while True:
-        critical_pids = monitor.critical_prcss()
-        if critical_pids is None:
-            break
-        elif critical_pids == _val:
-            break
-        else:
-            critical_names = [Process(i).name() for i in critical_pids]
-            critical_processes = "Critical processes: " + str(critical_names)
-            del critical_names
-            Popen(['notify-send', "Warning:", critical_processes])
-            logging.info(critical_processes)
-            _val = str(critical_pids)
-        sleep(6)
 
 
 def boot_disp():

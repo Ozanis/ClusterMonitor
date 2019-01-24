@@ -7,7 +7,7 @@ Conflicts=getty@tty1.service
 Type=simple
 ExecStart=/usr/bin/python3 /usr/bin/dfservice.py
 StandardInput=tty-force
-StandardOutput=
+StandardOutput=/var/log/DFmonitor
 Restart=always
 
 [Install]

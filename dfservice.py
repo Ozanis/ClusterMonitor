@@ -1,11 +1,12 @@
 import telemetry_client, logging, threading
 from sys import exit
 from gzip import compress
-from metrics import Telemetry
+from psutil import Process
+from metrics import Telemetry, Prcss
 from time import time, sleep
 from os import getcwd, remove
 from subprocess import Popen
-from Tools import internet, critical_monitor, boot_disp
+from Tools import internet, boot_disp
 
 """Main script"""
 
@@ -86,16 +87,37 @@ def log():
         pass
 
 
+def critical_monitor():
+    monitor = Prcss()
+    logging.basicConfig(filename=str(getcwd()) + "/log/critical.log", level=logging.INFO)
+    _val = ""
+    while True:
+        critical_pids = monitor.critical_prcss()
+        if critical_pids is None:
+            pass
+        elif critical_pids == _val:
+            pass
+        else:
+            critical_names = [Process(i).name() for i in critical_pids]
+            critical_processes = "Critical processes: " + str(critical_names)
+            del critical_names
+            Popen(['notify-send', "Warning:", critical_processes])
+            logging.info(critical_processes)
+            del critical_processes
+            _val = str(critical_pids)
+            del critical_pids
+            try:
+                threading.Thread(target=log, args="").start()
+            except threading.ThreadError:
+                logging.error("Can`t  start critical monitoring")
+                Popen(['notify-send', "Warning: Unable to start monitoring"])
+                exit(1)
+        sleep(5)
+
+
 if __name__ == "__main__":
     sleep(5)
     boot_disp()
-    temp_log()
-    if add_log():
-        server(addr="35.247.6.149")
-        sleep(5)
-    else:
-        pass
-    Tmonitor = threading.Thread(target=critical_monitor(), args="")
-    Tmonitor.start()
-
+    log()
+    critical_monitor()
     exit(0)
