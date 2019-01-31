@@ -48,6 +48,7 @@ class SockSsl:
             port = 4547
             self.ssl_sock.connect((host, port))
         except error:
+            self.ssl_sock.close()
             Popen(['notify-send', "Error of connection"])
             logging.error("Error of connection")
             exit(1)

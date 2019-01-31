@@ -14,7 +14,7 @@ from os import getcwd, remove
 
 def add_log():
     _buf = ""
-    path = str(getcwd()) + "/log/"
+    path = getcwd() + "/log/"
     try:
         f = open(path + "temp.log")
         _buf = f.read()
@@ -47,21 +47,25 @@ def temp_log():
 
 
 def cmprss(val):
-    try:
-        buf = compress(val, compresslevel=9)
-    except TypeError:
-        logging.error("Error of compressing")
-        Popen(['notify-send', "Compress error"])
-        exit(1)
+    if type(val) == "str":
+        try:
+            buf = compress(val.encode(), compresslevel=9)
+        except TypeError:
+            logging.error("Error of compressing")
+            Popen(['notify-send', "Compress error"])
+            exit(1)
+        else:
+            return buf
     else:
-        return buf
+        logging.error("Error of data format")
+        Popen(['notify-send', "Error: wrong telemetry data format"])
 
 
 def server(addr):
     while not internet(host=addr):
         sleep(5)
     chnl = telemetry_client.SockSsl()
-    path = str(getcwd()) + "/log/temp.log"
+    path = getcwd() + "/log/temp.log"
     try:
         with open(path, "rb") as _f:
             _buf = _f.read()
@@ -82,6 +86,7 @@ def server(addr):
 def log():
     temp_log()
     if add_log():
+        #server(addr="127.0.0.1")
         server(addr="35.247.6.149")
         sleep(5)
     else:
@@ -90,7 +95,7 @@ def log():
 
 def critical_monitor():
     monitor = Prcss()
-    logging.basicConfig(filename=str(getcwd()) + "/log/critical.log", level=logging.INFO)
+    logging.basicConfig(filename=getcwd() + "/log/critical.log", level=logging.INFO)
     _val = ""
     while True:
         critical_pids = monitor.critical_prcss()
