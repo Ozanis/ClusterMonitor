@@ -146,13 +146,13 @@ class Telemetry(SwapMemory, VirtualMemory, Hardware, Booting, Processor, Prcss, 
 
     def __init__(self):
         super().__init__()
-        logging.basicConfig(filename=str(os.getcwd()) + "/log/temp.log", level=logging.INFO)
+        logging.basicConfig(filename=os.getcwd() + "/log/temp.log", level=logging.INFO)
 
     @staticmethod
     def to_do_logs():
         try:
             logging.info("---USER---")
-            logging.info(str(getpass.getuser()))
+            logging.info(getpass.getuser())
             logging.info("---Boot log---")
             logging.info(Booting())
             logging.info("---Hardware log---")
