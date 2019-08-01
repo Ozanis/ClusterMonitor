@@ -1,7 +1,7 @@
 <h1>Description</h1>
-Client-server service for collecting telemetry over TLS. Meaning CPU load, num of cores, RAM, HDD. Logging and TLS-encryption included
+Client-server service for collecting telemetry over TLS. Meaning CPU load, num of cores, RAM, HDD. Logging, multithreading and TLS-encryption are included
 
-<h2>Related works</h>
+<h2>Related works</h2>
 
 1. <a href = https://github.com/Ozanis/TelemetryAgent >C++ version</a>
 2. <a href = https://github.com/Ozanis/LinuxNetworkDiagnostic> LinuxNetworkDiagnostic </a>
