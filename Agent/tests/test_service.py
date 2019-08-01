@@ -1,4 +1,5 @@
-import sys, telemetry_client, metrics, logging, os, time, subprocess, Tools, threading
+import sys, logging, os, time, subprocess, threading
+from Agent import metrics, telemetry_client, Tools
 
 """Main script"""
 

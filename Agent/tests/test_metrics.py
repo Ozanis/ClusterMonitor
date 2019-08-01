@@ -1,4 +1,4 @@
-import metrics, getpass
+from Agent import metrics
 
 
 def sensors_stat():

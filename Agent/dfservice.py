@@ -1,10 +1,11 @@
-import telemetry_client, logging, threading
+import logging, threading
+from Agent import telemetry_client
 from sys import exit
 from gzip import compress
 from psutil import Process
-from metrics import Telemetry, Prcss
+from Agent.metrics import Telemetry, Prcss
 from subprocess import Popen
-from Tools import internet, boot_disp
+from Agent.Tools import internet, boot_disp
 from time import time, sleep
 from os import getcwd, remove
 
