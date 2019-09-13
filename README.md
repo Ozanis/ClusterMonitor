@@ -1,5 +1,5 @@
 <h1>Description</h1>
-Client-server service for collecting telemetry over TLS. Meaning CPU load, num of cores, RAM, HDD. Logging, multithreading and TLS-encryption are included
+Client-server service for collecting telemetry over TLS. Meaning CPU load, num of cores, RAM, HDD, boot tine, network using. Logging, multithreading and TLS-encryption are included
 
 <h2>Related works</h2>
 
@@ -28,3 +28,4 @@ Client-server service for collecting telemetry over TLS. Meaning CPU load, num o
 1. You can run both applications as systemd services using provided bash script
 2. Running server-side is possible using bash-script also.
 3. Also provided simple UFW-controller to reject wrong connectors
+4. Enabled push-notifications about critical processes
