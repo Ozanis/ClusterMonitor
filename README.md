@@ -12,8 +12,8 @@ Client-server service for collecting telemetry over TLS. Meaning CPU load, num o
 * OpenSSL and pyOpenSSL
 * Psutil
 * UFW
-* SQL (in development state)
-* Docker (in development also)
+* SQLite (development state)
+* Docker 
 
 <h2>Content</h2>
 

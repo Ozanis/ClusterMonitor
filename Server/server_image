@@ -1,0 +1,5 @@
+FROM ubuntu:latest
+WORKDIR /Server
+VOLUME /Server
+CMD sh "python ServiceServer.py"
+
