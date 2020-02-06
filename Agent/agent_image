@@ -1,7 +1,0 @@
-FROM ubuntu:latest
-WORKDIR /Agent
-VOLUME /Agent
-CMD sh /conf/config.sh
-RUN sh "systemctl daemon-reload"
-RUN sh "systemctl status service.DF"
-
