@@ -1,14 +1,22 @@
-package main
+package usage
 
 import (
-	"fmt"
+	. "fmt"
 	"io/ioutil"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func getCPUSample() (idle, total uint64) {
+
+type Status struct{
+	total float64
+	idle float64
+	usage float64
+}
+
+
+func getSample() (idle, total uint64) {
 	contents, err := ioutil.ReadFile("/proc/stat")
 	if err != nil {
 		return
@@ -21,7 +29,7 @@ func getCPUSample() (idle, total uint64) {
 			for i := 1; i < numFields; i++ {
 				val, err := strconv.ParseUint(fields[i], 10, 64)
 				if err != nil {
-					fmt.Println("Error: ", i, fields[i], err)
+					Println("Error: ", i, fields[i], err)
 				}
 				total += val
 				if i == 4 {
@@ -34,12 +42,17 @@ func getCPUSample() (idle, total uint64) {
 	return
 }
 
-func main() {
-	idle0, total0 := getCPUSample()
+
+func (Cpu * Status) Usage() {
+	idle0, total0 := getSample()
 	time.Sleep(3 * time.Second)
-	idle1, total1 := getCPUSample()
-	idleTicks := float64(idle1 - idle0)
-	totalTicks := float64(total1 - total0)
-	cpuUsage := 100 * (totalTicks - idleTicks) / totalTicks
-	fmt.Printf("CPU usage is %f%% [busy: %f, total: %f]\n", cpuUsage, totalTicks-idleTicks, totalTicks)
+	idle1, total1 := getSample()
+	Cpu.idle = float64(idle1 - idle0)
+	Cpu.total = float64(total1 - total0)
+	Cpu.usage = 100 * (Cpu.total - Cpu.idle) / Cpu.total
+}
+
+
+func (Cpu * Status) Print() {
+	Printf("CPU usage is %f%% [busy: %f, total: %f]\n", Cpu.usage, Cpu.total-Cpu.idle, Cpu.total)
 }
