@@ -8,4 +8,5 @@ RUN export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 WORKDIR /proxy
 COPY .. ./proxy
 RUN go build main.go
+EXPOSE 5672
 ENTRYPOINT ["./main"]

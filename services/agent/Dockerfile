@@ -8,4 +8,5 @@ WORKDIR /agent
 COPY .. ./agent
 RUN go get github.com/streadway/amqp
 RUN go build main.go
+EXPOSE 5672
 ENTRYPOINT ["./main"]
