@@ -2,21 +2,20 @@ package main
 
 import (
 	"bio"
+	"fmt"
 	. "service"
 )
 
 const (
 	loadFile  = "/proc/loadavg"
 	usageFile = "/proc/stat"
+	timeout   = 1
 )
 
 func main() {
-	usage := bio.ReadFromFile(usageFile)
-	load := bio.ReadFromFile(loadFile)
-
-	cpu := service.CpuService{}
-	cpu.New(usage)
-	cpu.LoadData(load)
-	cache := bio.ReadFromFile(usageFile)
-	cpu.UsageData(usage, cache)
+	cpu := Stat{
+		CpuUsage: CpuUsage(bio.ReadFromFileTwice(usageFile, timeout)),
+		CpuLoad:  CpuLoad(bio.ReadFromFile(loadFile)),
+	}
+	fmt.Println(cpu)
 }

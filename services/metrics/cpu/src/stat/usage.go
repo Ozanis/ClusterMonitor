@@ -1,59 +1,71 @@
 package stat
 
 import (
-	"bufio"
 	"strconv"
 	"strings"
-	"unicode"
 )
 
 type Usage struct {
-	Total, Units, idle uint64
-	tags               map[string]uint64
+	Percent float64 `json:"percent"`
+	Units   int     `json:"units"`
 }
 
-func (cpu *Usage) New() {
-	cpu.tags = map[string]uint64{
-		"user":       0,
-		"nice":       0,
-		"system":     0,
-		"idle":       0,
-		"iowait":     0,
-		"irq":        0,
-		"softirq":    0,
-		"steal":      0,
-		"guest":      0,
-		"guest_nice": 0,
+type Tact struct {
+	Total uint64
+	Idle  uint64
+}
+
+func ParseStats(stream string) []uint64 {
+	var ret []uint64
+	str := strings.Split(stream, "\n")
+	for _, i := range strings.Fields(str[0]) {
+		val, _ := strconv.ParseUint(i, 10, 64)
+		ret = append(ret, val)
 	}
+	return ret
 }
 
-func (cpu *Usage) ParseStats(stream string) {
-	fields := strings.Fields(stream[1:])
-	for _, valStr := range fields {
-		val, _ := strconv.ParseUint(valStr, 10, 64)
-		cpu.tags[valStr] = val
-	}
-}
-
-func (cpu *Usage) ParseUnits(stream bufio.Scanner) {
-	for stream.Scan() {
-		line := stream.Text()
-		if strings.HasPrefix(line, "cpu") && unicode.IsDigit(rune(line[3])) {
-			cpu.Units++
+func ParseUnits(stream string) int {
+	var units = -1
+	for _, substr := range strings.Split(stream, "\n") {
+		if strings.HasPrefix(substr, "cpu") {
+			units++
 		}
 	}
+	return units
 }
 
-func (cpu *Usage) GetIdle() uint64 {
-	cpu.idle = cpu.tags["idle"] + cpu.tags["iowait"]
-	return cpu.idle
+func GetIdle(stats []uint64) uint64 {
+	return stats[3] + stats[4]
 }
 
-func (cpu *Usage) GetTotal() uint64 {
-	cpu.Total = cpu.tags["user"] + cpu.tags["nice"] + cpu.tags["system"] + cpu.tags["irq"] + cpu.tags["softirq"] + cpu.tags["steal"] + cpu.idle
-	return cpu.Total
+func GetTotal(stats []uint64) uint64 {
+	var ret uint64 = 0
+	for i := range stats {
+		ret += stats[i]
+	}
+	return ret
 }
 
-func (cpu *Usage) Percentage() float64 {
-	return float64(100*(cpu.Total-cpu.idle)) / float64(cpu.Total)
+func GetTact(stream string) Tact {
+	data := ParseStats(stream)
+	return Tact{
+		Total: GetTotal(data),
+		Idle:  GetIdle(data),
+	}
+}
+
+func GetUsage(tact0, tact1 Tact) Tact {
+	return Tact{
+		Total: tact0.Total - tact1.Total,
+		Idle:  tact0.Idle - tact1.Idle,
+	}
+}
+
+func Percentage(tact Tact) float64 {
+	return float64(tact.Total-tact.Idle) / float64(tact.Total)
+}
+
+func GetPercent(stream0, stream1 string) float64 {
+	return Percentage(GetUsage(GetTact(stream0), GetTact(stream1)))
 }

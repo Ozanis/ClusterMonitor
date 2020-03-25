@@ -1,25 +1,21 @@
 package service
 
 import (
-	"bufio"
-	. "facade"
+	. "stat"
 )
 
-type CpuService struct {
-	usage UsageFacade
-	load  LoadFacade
+type Stat struct {
+	CpuUsage Usage
+	CpuLoad  Load
 }
 
-func (cs *CpuService) New(scanner bufio.Scanner) {
-	cs.usage.GetUnits(scanner)
+func CpuUsage(stream0, stream1 string) Usage {
+	return Usage{
+		Units:   ParseUnits(stream0),
+		Percent: GetPercent(stream0, stream1),
+	}
 }
 
-func (cs *CpuService) UsageData(scanner0, scanner1 bufio.Scanner) {
-	cs.usage.CollectStats(scanner0, scanner1)
-	cs.usage.Dto()
-}
-
-func (cs *CpuService) LoadData(scanner bufio.Scanner) {
-	cs.load.CollectStats(scanner)
-	cs.load.Dto()
+func CpuLoad(stream string) Load {
+	return CollectLoad(stream)
 }
