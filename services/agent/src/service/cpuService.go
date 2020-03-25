@@ -1,21 +1,12 @@
 package service
 
 import (
-	. "stat/cpu"
+	"stat"
 )
 
-type Cpu struct {
-	CpuUsage Usage
-	CpuLoad  Load
-}
-
-func CpuUsage(stream0, stream1 string) Usage {
-	return Usage{
-		Units:   ParseUnits(stream0),
-		Percent: GetPercent(stream0, stream1),
+func CpuService(stream0, stream1 string) stat.Usage {
+	return stat.Usage{
+		Units:   stat.ParseUnits(stream0),
+		Percent: stat.GetPercent(stream0, stream1),
 	}
-}
-
-func CpuLoad(stream string) Load {
-	return CollectLoad(stream)
 }

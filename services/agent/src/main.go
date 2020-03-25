@@ -7,19 +7,27 @@ import (
 )
 
 const (
-	loadFile  = "/proc/loadavg"
-	usageFile = "/proc/stat"
-	ramFile   = "/proc/meminfo"
 	timeout   = 1
+	usageFile = "/proc/stat"
+	loadFile  = "/proc/loadavg"
+	ramFile   = "/proc/meminfo"
+	diskFile  = "/proc/diskstats"
+	netFile   = "/proc/net/dev"
 )
 
 func main() {
-	cpu := Cpu{
-		CpuUsage: CpuUsage(core.ReadFromFileTwice(usageFile, timeout)),
-		CpuLoad:  CpuLoad(core.ReadFromFile(loadFile)),
-	}
+	cpu := CpuService(core.ReadFromFileTwice(usageFile, timeout))
 	fmt.Println(cpu)
-	ram := CollectRam(ramFile)
+
+	load := LoadService(core.ReadFromFile(loadFile))
+	fmt.Println(load)
+
+	ram := RamService(core.ReadFromFile(ramFile))
 	fmt.Println(ram)
 
+	disk := DiskService(core.ReadFromFile(diskFile))
+	fmt.Println(disk)
+
+	net := NetService(core.ReadFromFile(netFile))
+	fmt.Println(net)
 }

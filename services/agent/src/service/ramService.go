@@ -1,10 +1,9 @@
 package service
 
 import (
-	"core"
-	"stat/ram"
+	"stat"
 )
 
-func CollectRam(filename string) ram.Ram {
-	return ram.GetMemory(ram.ParseStats(core.ReadFromFile(filename)))
+func RamService(stream string) stat.Ram {
+	return stat.GetMemory(stat.ParseStats(stream))
 }

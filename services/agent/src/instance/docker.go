@@ -1,4 +1,4 @@
-package docker
+package instance
 
 /*
 import (
@@ -8,7 +8,7 @@ import (
 
 )
 
-var ErrDockerNotAvailable = errors.New("docker not available")
+var ErrDockerNotAvailable = errors.New("virt not available")
 var ErrCgroupNotAvailable = errors.New("cgroup not available")
 
 var invoke common.Invoker = common.Invoke{}

@@ -1,8 +1,7 @@
-package ram
+package stat
 
 import (
 	. "core"
-	"strconv"
 	"strings"
 )
 
@@ -17,11 +16,10 @@ type Ram struct {
 
 func ParseStats(stream string) []float64 {
 	var stats []float64
-	for j, i := range strings.Split(stream, "\n") {
-		if j < 10 {
-			val, _ := strconv.ParseUint(strings.Fields(i)[1], 10, 64)
-			stats = append(stats, ToGb(val))
-		}
+	data := strings.Split(stream, "\n")
+	for _, i := range data[:10] {
+		val := StringToUint(strings.Fields(i)[1])
+		stats = append(stats, ToGb(val))
 	}
 	return stats
 }

@@ -1,7 +1,7 @@
-package cpu
+package stat
 
 import (
-	"strconv"
+	"core"
 	"strings"
 )
 
@@ -15,11 +15,11 @@ type Tact struct {
 	Idle  uint64
 }
 
-func ParseStats(stream string) []uint64 {
+func ParseCpuStats(stream string) []uint64 {
 	var ret []uint64
 	str := strings.Split(stream, "\n")
 	for _, i := range strings.Fields(str[0]) {
-		val, _ := strconv.ParseUint(i, 10, 64)
+		val := core.StringToUint(i)
 		ret = append(ret, val)
 	}
 	return ret
@@ -48,7 +48,7 @@ func GetTotal(stats []uint64) uint64 {
 }
 
 func GetTact(stream string) Tact {
-	data := ParseStats(stream)
+	data := ParseCpuStats(stream)
 	return Tact{
 		Total: GetTotal(data),
 		Idle:  GetIdle(data),
@@ -69,3 +69,20 @@ func Percentage(tact Tact) float64 {
 func GetPercent(stream0, stream1 string) float64 {
 	return Percentage(GetUsage(GetTact(stream0), GetTact(stream1)))
 }
+
+/*
+PrevIdle = previdle + previowait
+Idle = idle + iowait
+
+PrevNonIdle = prevuser + prevnice + prevsystem + previrq + prevsoftirq + prevsteal
+NonIdle = user + nice + system + irq + softirq + steal
+
+PrevTotal = PrevIdle + PrevNonIdle
+Total = Idle + NonIdle
+
+# differentiate: actual value minus the previous one
+totald = Total - PrevTotal
+idled = Idle - PrevIdle
+
+CPU_Percentage = (totald - idled)/totald
+*/
