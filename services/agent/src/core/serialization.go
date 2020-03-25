@@ -1,4 +1,4 @@
-package bio
+package core
 
 import (
 	"encoding/json"
@@ -15,13 +15,13 @@ func ReadFromFile(fileName string) string {
 	return string(file)
 }
 
-func Bytes(data []string) ([]byte, error) {
-	return json.Marshal(data)
-}
-
 func ReadFromFileTwice(fileName string, duration time.Duration) (string, string) {
 	stream0 := ReadFromFile(fileName)
 	time.Sleep(duration * time.Second)
 	stream1 := ReadFromFile(fileName)
 	return stream0, stream1
+}
+
+func Bytes(data []string) ([]byte, error) {
+	return json.Marshal(data)
 }

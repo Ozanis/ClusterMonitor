@@ -4,7 +4,7 @@ import (
 	. "stat/cpu"
 )
 
-type Stat struct {
+type Cpu struct {
 	CpuUsage Usage
 	CpuLoad  Load
 }
