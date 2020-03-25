@@ -16,18 +16,21 @@ const (
 )
 
 func main() {
-	cpu := CpuService(core.ReadFromFileTwice(usageFile, timeout))
-	fmt.Println(cpu)
 
-	load := LoadService(core.ReadFromFile(loadFile))
-	fmt.Println(load)
+	for {
+		cpu := CpuService(core.ReadFromFileTwice(usageFile, timeout))
+		fmt.Println(cpu)
 
-	ram := RamService(core.ReadFromFile(ramFile))
-	fmt.Println(ram)
+		load := LoadService(core.ReadFromFile(loadFile))
+		fmt.Println(load)
 
-	disk := DiskService(core.ReadFromFile(diskFile))
-	fmt.Println(disk)
+		ram := RamService(core.ReadFromFile(ramFile))
+		fmt.Println(ram)
 
-	net := NetService(core.ReadFromFile(netFile))
-	fmt.Println(net)
+		disk := DiskService(core.ReadFromFile(diskFile))
+		fmt.Println(disk)
+
+		net := NetService(core.ReadFromFile(netFile))
+		fmt.Println(net)
+	}
 }
