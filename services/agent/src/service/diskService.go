@@ -4,6 +4,6 @@ import (
 	. "stat"
 )
 
-func DiskService(path string) Disk {
+func DiskService(path string) DiskStat {
 	return CollectDisk("/")
 }

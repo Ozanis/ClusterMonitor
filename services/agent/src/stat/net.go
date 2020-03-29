@@ -11,7 +11,7 @@ type Traffic struct {
 	Packets uint64 `json:"packets"`
 }
 
-type Net struct {
+type NetStat struct {
 	Name string  `json:"name"`
 	Rx   Traffic `json:"rx"`
 	Tx   Traffic `json:"tx"`
@@ -21,8 +21,8 @@ func ParseNetName(stream string) string {
 	return stream[:len(stream)-1]
 }
 
-func CollectNet(stream []string) Net {
-	return Net{
+func CollectNet(stream []string) NetStat {
+	return NetStat{
 		Name: ParseNetName(stream[0]),
 		Rx: Traffic{
 			Bytes: core.StringToUint(stream[1]),

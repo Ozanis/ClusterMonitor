@@ -1,7 +1,6 @@
 package core
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"time"
@@ -20,8 +19,4 @@ func ReadFromFileTwice(fileName string, duration time.Duration) (string, string)
 	time.Sleep(duration * time.Second)
 	stream1 := ReadFromFile(fileName)
 	return stream0, stream1
-}
-
-func Bytes(data []string) ([]byte, error) {
-	return json.Marshal(data)
 }

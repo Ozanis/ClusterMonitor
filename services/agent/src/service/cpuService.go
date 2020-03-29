@@ -1,12 +1,10 @@
 package service
 
-import (
-	"stat"
-)
+import . "stat"
 
-func CpuService(stream0, stream1 string) stat.Usage {
-	return stat.Usage{
-		Units:   stat.ParseUnits(stream0),
-		Percent: stat.GetPercent(stream0, stream1),
+func CpuService(stream0, stream1 string) CpuStat {
+	return CpuStat{
+		Units:   ParseUnits(stream0),
+		Percent: GetPercent(stream0, stream1),
 	}
 }

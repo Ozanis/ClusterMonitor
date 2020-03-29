@@ -1,7 +1,7 @@
 package service
 
-import "stat"
+import . "stat"
 
-func LoadService(stream string) stat.Load {
-	return stat.CollectLoad(stream)
+func LoadService(stream string) LoadStat {
+	return CollectLoad(stream)
 }

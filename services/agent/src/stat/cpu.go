@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type Usage struct {
+type CpuStat struct {
 	Percent float64 `json:"percent"`
 	Units   int     `json:"units"`
 }

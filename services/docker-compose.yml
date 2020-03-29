@@ -1,0 +1,109 @@
+version: "3.7"
+
+services:
+
+#  db:
+#    logstash:
+#      build: logstash/
+#      dockerfile: ./logstash/Dockerfile
+#      image: monitoring:logstash
+#      command: systemctl start logstash
+#      network_mode: host
+#      ports:
+#        - 9600
+
+#    elastic:
+#      build: .elastic
+#      dockerfile: .elastic/Dockerfile
+#      image: monitoring:elastic
+#      network_mode: host
+#      ports:
+#        - 5000
+
+#    redis:
+#      build: .rerdis
+#      dockerfile: .redis/Dockerfile
+#      image: monitoring:redis
+#      network_mode: host
+#      ports:
+#        - 6379
+
+  role:
+#    server:
+#      build: .server/
+#      image: monitoring:server
+#      environment:
+#        RABBITMQ_VERSION: 3.6.1
+#        GOLANG_VERSION: 1.14.0
+#        ERL_EPMD_PORT: 4369
+#        SERVICE: proxy
+#      deploy:
+#        restart_policy:
+#          condition: on-failure
+#          delay: 5s
+#          max_attempts: 3
+#        resources:
+#          limits:
+#            cpus: '0.50'
+#            memory: 50M
+#      network_mode: host
+#      ports:
+#        - 5000
+#        - 5672
+#        - 4430
+#        - 8000
+#      depends_on:
+#        - db
+
+    proxy:
+      build: .proxy
+      dockerfile: .Dockerfile
+      image: monitoring:proxy
+      environment:
+        RABBITMQ_VERSION: 3.6.1
+        GOLANG_VERSION: 1.14.1
+        ERL_EPMD_PORT: 4369
+        SERVICE: proxy
+      deploy:
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 50M
+      network_mode: host
+      ports:
+        - 6379
+        - 4369
+        - 5672
+        - 15672
+#      depends_on:
+#        - server
+
+    agent:
+      build: .agent
+      image: monitoring:agent
+      dockerfile: .Dockerfile
+      environment:
+        RABBITMQ_VERSION: 3.6.1
+        GOLANG_VERSION: 1.14.1
+        ERL_EPMD_PORT: 4369
+        SERVICE: agent
+      deploy:
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 50M
+      network_mode: host
+      ports:
+        - 4369
+        - 5672
+        - 15672
+      depends_on:
+        - proxy
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+        - subnet: "2001:3984:3989::/64"

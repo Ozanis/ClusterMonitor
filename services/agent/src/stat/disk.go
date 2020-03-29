@@ -6,7 +6,7 @@ import (
 	"syscall"
 )
 
-type Disk struct {
+type DiskStat struct {
 	//	Name       string  `json:"name"`
 	Capacity float64 `json:"capacity"`
 	Usage    float64 `json:"used"`
@@ -36,10 +36,10 @@ func DiskPercent(capacity, usage uint64) float64 {
 	return float64(usage) / float64(capacity) * 100
 }
 
-func CollectDisk(path string) Disk {
+func CollectDisk(path string) DiskStat {
 	desc := GetDiskDescriptor(path)
 	capacity := GetDiskCapacity(desc)
-	return Disk{
+	return DiskStat{
 		Capacity: Round3(ToGb(capacity / 1024)),
 		Usage:    Round3(DiskPercent(capacity, GetDiskFreeSpace(desc))),
 	}

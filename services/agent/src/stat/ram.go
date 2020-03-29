@@ -7,14 +7,14 @@ import (
 
 /*MemTotal[0], MemFree[1], MemAvailable[2], Buffers[3], Cached[4], Active[5], Inactive[6], SwapCached[7], SwapTotal[8], SwapFree[9]*/
 
-type Ram struct {
+type RamStat struct {
 	Total     float64 `json:"total"`
 	Used      float64 `json:"used"`
 	SwapTotal float64 `json:"swap_total"`
 	SwapUsed  float64 `json:"swap_used"`
 }
 
-func ParseStats(stream string) []float64 {
+func ParseRamStats(stream string) []float64 {
 	var stats []float64
 	data := strings.Split(stream, "\n")
 	for _, i := range data[:10] {
@@ -24,8 +24,8 @@ func ParseStats(stream string) []float64 {
 	return stats
 }
 
-func GetMemory(stats []float64) Ram {
-	return Ram{
+func GetMemory(stats []float64) RamStat {
+	return RamStat{
 		Total:     Round3(stats[0]),
 		Used:      Round3(stats[0] - stats[1] - stats[3] - stats[4]),
 		SwapTotal: Round3(stats[8]),
