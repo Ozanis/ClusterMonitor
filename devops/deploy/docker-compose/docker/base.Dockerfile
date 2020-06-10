@@ -1,15 +1,15 @@
 FROM alpine:latest
-RUN apk update && apk upgrade
-LABEL name="base alpine"
-RUN apk add --update --no-cache curl tar xz bash erlang erlang-mnesia erlang-public-key erlang-crypto erlang-ssl erlang-sasl erlang-asn1 erlang-inets erlang-os-mon erlang-xmerl erlang-eldap erlang-syntax-tools
-RUN curl -sSL https://www.rabbitmq.com/releases/rabbitmq-server/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.xz | tar -xJ -C / --strip-components 1
-RUN rm -rf /share/**/rabbitmq*.xz
+ARG rabbit_v="3.6.1"
+ARG go_v="1.14.0"
+ENV RABBITMQ_VERSION=rabbit_v
+ENV GOLANG_VERSION=go_v
+RUN apk add --update --no-cache wget tar xz bash erlang erlang-mnesia erlang-public-key erlang-crypto erlang-ssl erlang-sasl erlang-asn1 erlang-inets erlang-os-mon erlang-xmerl erlang-eldap erlang-syntax-tools
+RUN wget https://www.rabbitmq.com/releases/rabbitmq-server/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.xz | tar -xJ -C / --strip-components 1 && rm -rf /share/**/rabbitmq*.xz
 RUN apk del --purge curl tar xz
 RUN addgroup rabbitmq
 RUN adduser -DS -g "" -G rabbitmq -s /bin/sh -h /var/lib/rabbitmq rabbitmq
 RUN mkdir -p /data/rabbitmq
 RUN chown -R rabbitmq:rabbitmq /data/rabbitmq
-ENV HOME /var/lib/rabbitmq
 ENV PATH /usr/lib/rabbitmq/bin:$PATH
 LABEL name="RabbitMQ image"
 #RUN rabbitmq-diagnostics status

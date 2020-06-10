@@ -7,7 +7,7 @@ RUN wget -O go.tgz "https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz"; \
     	cd /usr/local/go/src; \
         	./make.bash; \
         	\ rm -rf \
-COPY .. ./server
+COPY ../../../../services ./server
 ENV GOPATH ~/server
 RUN export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 RUN go get github.com/streadway/amqp && go build server.go
