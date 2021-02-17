@@ -1,7 +1,7 @@
 node:
   &base:
-    build:
-    dockerfile: base.Dockerfile
+    build: service
+    dockerfile: docker/base.Dockerfile
     environment:
       - RABBITMQ_VERSION: 3.6.1
       - GOLANG_VERSION: 1.14.1
@@ -17,26 +17,30 @@ node:
       - 5672
       - 15672
 
+
 agent <<: *base
-SERVICE: agent
-depends_on:
-  - proxy
+  build: service/agent
+  SERVICE: agent
+  depends_on:
+    - proxy
 
 proxy <<: *base
-SERVICE: proxy
-ports:
-  - 4369
-  - 5672
-  - 15672
-    #    depends_on:
-    #      - master
+  build: service/proxy
+  SERVICE: proxy
+  ports:
+    - 4369
+    - 5672
+    - 15672
+#    depends_on:
+#      - master
 
 master <<: *base
-SERVICE: master
-ports:
-  - 5000
-  - 5672
-  - 4430
-  - 8000
+  build: service/master
+  SERVICE: master
+  ports:
+    - 5000
+    - 5672
+    - 4430
+    - 8000
 #   depends_on:
 #      - db

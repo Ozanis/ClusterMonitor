@@ -1,90 +1,24 @@
 version: "3.7"
 
 services:
-#  db:
-#    extends:
-#      file: composes/db-compose.yml
-#      service:
-#        - redis
-#        - elastic
-#        - logstash
+  db:
+    extends:
+      file: composes/docker-compose-db.yml
+      service:
+        - redis
+        - elastic
+        - logstash
 
-  node:
-#    server:
-#      build: .server/
-#      image: monitoring:server
-#      environment:
-#        RABBITMQ_VERSION: 3.6.1
-#        GOLANG_VERSION: 1.14.0
-#        ERL_EPMD_PORT: 4369
-#        SERVICE: proxy
-#      deploy:
-#        restart_policy:
-#          condition: on-failure
-#          delay: 5s
-#          max_attempts: 3
-#        resources:
-#          limits:
-#            cpus: '0.50'
-#            memory: 50M
-#      network_mode: host
-#      ports:
-#        - 5000
-#        - 5672
-#        - 4430
-#        - 8000
-#      depends_on:
-#        - db
-
-    proxy:
-      build:
-        context: deploy/proxy
-        dockerfile: base.master.Dockerfile
-      container_name: proxy
-      environment:
-        - RABBITMQ_VERSION: 3.6.1
-        - GOLANG_VERSION: 1.14.1
-        - ERL_EPMD_PORT: 4369
-        - SERVICE: proxy
-      deploy:
-        resources:
-          limits:
-            cpus: '0.50'
-            memory: 50M
-      network_mode: container
-      ports:
-        - 6379
-        - 4369
-        - 5672
-        - 15672
-  #      depends_on:
-  #        - server
-
-    agent:
-      build:
-        context: deploy/agent
-        dockerfile: base.master.Dockerfile
-      container_name: proxy
-      environment:
-        - RABBITMQ_VERSION: 3.6.1
-        - GOLANG_VERSION: 1.14.1
-        - ERL_EPMD_PORT: 4369
-        - SERVICE: agent
-      deploy:
-        resources:
-          limits:
-            cpus: '0.50'
-            memory: 50M
-      network_mode: container
-      ports:
-        - 4369
-        - 5672
-        - 15672
-      depends_on:
+  cluster:
+    extends:
+      file: composes/docker-compose-cluster.yml
+      service:
+        - master
         - proxy
+        - agent
 
 #networks:
-#  app_net:
+#  cluster:
 #    ipam:
 #      driver: default
 #      config:

@@ -1,25 +1,19 @@
 db:
 #    logstash:
-#      build: logstash/
-#      dockerfile: ./logstash/base.master.Dockerfile
-#      image: monitoring:logstash
-#      command: systemctl start logstash
+#      dockerfile: docker/logstash.Dockerfile
 #      network_mode: host
 #      ports:
 #        - 9600
 
 #    elastic:
-#      build: .elastic
-#      dockerfile: .elastic/base.master.Dockerfile
+#      dockerfile: docker/elastic.Dockerfile
 #      image: monitoring:elastic
 #      network_mode: host
 #      ports:
 #        - 5000
 
 #    redis:
-#      build: .rerdis
-#      dockerfile: .redis/base.master.Dockerfile
-#      image: monitoring:redis
+#      dockerfile: docker/redis.Dockerfile
 #      network_mode: host
 #      ports:
 #        - 6379
