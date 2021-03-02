@@ -1,5 +1,0 @@
-route:
-  receiver: 'discord'
-
-receivers:
-  - name: 'discord'

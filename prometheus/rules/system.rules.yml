@@ -1,0 +1,21 @@
+groups:
+  - name: Average CPU load %
+    rules:
+    - record: avg_cpu:percent:5s
+      expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node",mode="idle"}[1m])) * 100)
+  
+  - name: FS available %
+    rules:
+    - record: fs:percent:5s
+      expr: 100 - (node_filesystem_avail_bytes/node_filesystem_size_bytes * 100)
+#      expr: 100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"})
+
+  - name: Swap usage
+    rules:
+    - record: swap:percent:5s
+      expr: 
+
+  - name: Memory usage
+    rules:
+    - record: ram:percent:5s
+      expr: 100 * (1 - ((avg_over_time(node_memory_MemFree[24h]) + avg_over_time(node_memory_Cached[24h]) + avg_over_time(node_memory_Buffers[24h])) / avg_over_time(node_memory_MemTotal[24h])))

@@ -6,3 +6,10 @@ ALERT InstanceDown
     summary = "Instance {{ $labels.instance }} down",
     description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute.",
   }
+
+ALERT NodeRebootsTooOften
+  IF changes(node_boot_time{job="node"}[1d]) > 1
+  SUMMARY "Node rebooots too often"
+  DESCRIPTION "Node {{ $labels.instance }} reboots too often ({{ $value }} is more than 1 times per 1d)"
+
+  
