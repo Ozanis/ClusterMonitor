@@ -1,0 +1,63 @@
+version: '3.8'
+services:
+  
+  prometheus:
+    build:
+      context: .
+      dockerfile: ./prometheus/Dockerfile
+    restart: unless-stopped
+    command:
+      - '-config.file=/etc/prometheus/prometheus.yml'
+      - '-storage.local.path=/var/lib/prometheus'
+      - '-alertmanager.url=http://alertmanager:9093'
+    # env_file: 
+    #   - ./prometheus/prometheus.env
+    volumes: 
+      - prometheus-data: /var/lib/prometheus
+    ports:
+      - 9000:9000
+ 
+  loki:
+    build:
+      context: .
+      dockerfile: ./loki/Dockerfile
+    # env_file: 
+    #   - ./loki/loki.env
+    # volumes: 
+    #   - 
+    # ports:
+    #   - 9000:9000
+
+  grafana:
+    build:
+      context: .
+      dockerfile: ./grafana/Dockerfile
+      args:
+        - VERSION=latest
+    container_name: monitoring_grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+      - loki
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      # - GF_SERVER_DOMAIN=myrul.com
+      # - GF_SMTP_ENABLED=true
+      # - GF_SMTP_HOST=smtp.gmail.com:587
+      # - GF_SMTP_USER=myadrress@gmail.com
+      # - GF_SMTP_PASSWORD=mypassword
+      # - GF_SMTP_FROM_ADDRESS=myaddress@gmail.com
+    # env_file: 
+    #   - ./grafana/grafana.env
+    # volumes: 
+    #   - 
+    ports:
+      - 3000:3000
+
+volumes:
+  prometheus-data: {}
+  grafana-data: {}
